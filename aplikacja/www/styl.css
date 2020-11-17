@@ -37,8 +37,12 @@
   background-color: #ff8000;
   color: #ffffff;
   height: 300px;
-  border-radius: 10px;
+  border-radius: 40px;
   border: none;
+  text-align: center;
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 40px;
 }
 
 .fa, .fas {
