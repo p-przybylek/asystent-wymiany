@@ -1,0 +1,43 @@
+.skin-blue .main-header .logo {
+    font-family: "Georgia", Times, "Times New Roman", serif;
+    font-weight: bold;
+    font-size: 24px;
+    background-color: #ffc34d;
+    color: #000000;
+}
+
+.skin-blue .main-header .logo:hover {
+    background-color: #ffc34d;
+}
+
+.skin-blue .main-header .navbar {
+    background-color: #ffc34d;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle {
+    background-color: #ffc34d;
+    color: #000000;
+    display: none;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover{
+    background-color: #ffc34d;
+    color: #000000;
+}  
+
+.content-wrapper {
+  background-color: #ffffff;
+}
+
+.footer {
+  position:fixed;
+  bottom: 0;
+  width:100%;
+  height:25px;
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #000000;
+  z-index: 1000;
+  text-align: center;
+}
