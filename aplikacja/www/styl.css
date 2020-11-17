@@ -1,32 +1,57 @@
 .skin-blue .main-header .logo {
-    font-family: "Georgia", Times, "Times New Roman", serif;
-    font-weight: bold;
-    font-size: 24px;
-    background-color: #ffc34d;
-    color: #000000;
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 24px;
+  background-color: #ffc34d;
+  color: #000000;
 }
 
 .skin-blue .main-header .logo:hover {
-    background-color: #ffc34d;
+  background-color: #ffc34d;
 }
 
 .skin-blue .main-header .navbar {
-    background-color: #ffc34d;
+  background-color: #ffc34d;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle {
-    background-color: #ffc34d;
-    color: #000000;
-    display: none;
+  background-color: #ffc34d;
+  color: #000000;
+  display: none;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle:hover{
-    background-color: #ffc34d;
-    color: #000000;
+  background-color: #ffc34d;
+  color: #000000;
 }  
 
 .content-wrapper {
   background-color: #ffffff;
+}
+
+#box-page {
+  margin: 40px 40px 40px 40px;
+}
+
+.box {
+  background-color: #ff8000;
+  color: #ffffff;
+  height: 300px;
+  border-radius: 10px;
+  border: none;
+}
+
+.fa, .fas {
+  color: #000000;
+}
+
+.header {
+  display: none;
+}
+
+.selectize-control {
+  text-align: left;
+  font-family: "Georgia", Times, "Times New Roman", serif;
 }
 
 .footer {
