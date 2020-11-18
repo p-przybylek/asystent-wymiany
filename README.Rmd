@@ -13,45 +13,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# asystentWymiany
+# Asystent wymiany sprzętu RTF i AGD
+
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of asystentWymiany is to ...
+Rozwiązanie przeznaczone dla użytkownika końcowego terminala PLISZKA.
 
-## Installation
+Aplikacja ma za zadanie, na podstawie danych o zużyciu energii elektrycznej
+przez poszczególne urządzenia (dostarczanych przez sam terminal) oraz bazy
+modeli poszczególnych typów urządzeń RTV i AGD, przedstawiać użytkownikowi najbardziej dla niego opłacalne wymiany odbiorników prądu na bardziej
+energooszczędne modele. W tym celu, ma ona wizualizować koszt i opłacalność
+poszczególnych wymian, w zależności od stawek dostawcy energii, obecnego modelu i charakterystyki użytkowania danego urządzenia.
 
-You can install the released version of asystentWymiany from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("asystentWymiany")
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(asystentWymiany)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
 
 
 ## Code of Conduct
