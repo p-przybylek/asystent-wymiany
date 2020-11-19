@@ -31,7 +31,7 @@ app_ui <- function(request) {
                                                                   fluidRow(
                                                                     box_interfejs1("box-washing-machine", "PRALKI"),
                                                                     box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
-                                                                    box_interfejs1("box-microwave", "CZAMIKROFALÓWKIJNIKI")))),
+                                                                    box_interfejs1("box-microwave", "MIKROFALÓWKI")))),
                                       shinydashboard::tabItem(tabName = "models"),
                                       shinydashboard::tabItem(tabName = "oferts")))),
     tags[["footer"]]("Naatu Energy", class = "footer")

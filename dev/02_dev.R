@@ -16,7 +16,7 @@
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
 usethis::use_package( "thinkr" ) # tu, chyba, bedziemy dopisywac uzywane pakiety TODO(ADAM, dopisz pakiety)
-
+usethis::use_package('shinydashboard')
 ## Add modules ---- # chyba nie bedziemy uzywac
 ## Create a module infrastructure in R/
 #golem::add_module( name = "name_of_module1" ) # Name of the module
