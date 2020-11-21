@@ -43,6 +43,7 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost)
           legend.position = 'top',
           panel.grid.minor.x = element_blank()
     )
+  return(plot)
 }
 
 cur_m_power <- 400 # kWh/rok
