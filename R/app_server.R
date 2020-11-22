@@ -14,24 +14,49 @@ app_server <- function( input, output, session ) {
   })
  
   # fridges - 5 przykładowych modeli lodówek do testu, na razie wpisane ręcznie, potem pobierane z bazy modeli
-  fridges <- data.frame("BEKO"=c(155, 2200), "AMICA"=c(160, 2300), "LG"=c(170, 2000), "SAMSUNG"=c(183,2200), "BOSH"=c(150,3500))
-  nms <- names(fridges)
-  
+  cur_m_cost <- 500
+  el_cost <- 0.617
+  best_fridges <- get_best_fridges(cur_m_cost, el_cost)
+  best_fridges$input_ID <- paste0('actionButton_',best_fridges[['ID']])
     output$box_models <- renderUI(
       sidebarLayout(
         sidebarPanel(
           h1("LODÓWKI", align="center"),
-          lapply(nms, function(name){fluidRow(actionButton(name,name))}), width = 2),
-        
-        mainPanel(div(id="box-modelplot"," Porównanie zużycia energii ", plotOutput("modelplot",height = "700px")))))
-    
-    
+          lapply(best_fridges$input_ID, function(id){
+            fluidRow(actionButton(inputId = id,
+                                  label = best_fridges[best_fridges$input_ID == id,'Nazwa']))
+            }), 
+          width = 2),
+        mainPanel(div(id="box-modelplot",
+                      " Porównanie zużycia energii ", 
+                      plotOutput("modelplot",height = "700px")))))
     observe({
-      lapply(nms, function(name){
-        observeEvent(input[[name]],
-                     output$modelplot <- renderPlot(yearly_forecast_plot(500, fridges[1,name],fridges[2,name],0.617)))
+      lapply(best_fridges$input_ID, function(input_id){
+        observeEvent(input[[input_id]],
+                     output$modelplot <- {
+                       renderPlot(yearly_forecast_plot(cur_m_power = cur_m_cost,
+                                                       new_m_power = best_fridges[best_fridges$input_ID == input_id,
+                                                                                  'Roczne_zuzycie_pradu_kWh'],
+                                                       new_m_price = best_fridges[best_fridges$input_ID == input_id,
+                                                                                  'Cena'],
+                                                       el_cost = el_cost))
+                       })
       })})
-    
-    
+}
+
+#' Get best fridges
+#' 
+#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
+#' with info about most cost-efficient top_n fridges 
+get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
+  data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
+    get_years_to_go(cur_m_power, 
+                    new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
+                    new_m_price = fridges[i,'Cena'],
+                    el_cost)
+  })
+  fridges[order(fridges$years_to_go)[1:top_n],c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
   
 }
+
