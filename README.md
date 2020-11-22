@@ -23,6 +23,7 @@ How to work in here
 UWAGA: Teoretycznie można wejść w `dev/run_dev.R` i to odpalić i powinno działać, ale mi osobiście on nie czyta `CSS`a, więc robię tak, jak jest napisane powyżej.
 
 ### Gdzie co jest i czym jest
+[*R packages* by H. Wickham](https://r-pkgs.org/)
 
 1.  Kody R są w folderze `R`.
 2.  Dane `.Rda` i `.csv` będą w folderze `data`. Nie wiem, czy będziemy je tam segregować w subfolderach. Mim zdaniem nie trzeba.
