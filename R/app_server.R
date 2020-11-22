@@ -18,18 +18,24 @@ app_server <- function( input, output, session ) {
   el_cost <- 0.617
   best_fridges <- get_best_fridges(cur_m_cost, el_cost)
   best_fridges$input_ID <- paste0('actionButton_',best_fridges[['ID']])
-    output$box_models <- renderUI(
-      sidebarLayout(
-        sidebarPanel(
-          h1("LODÓWKI", align="center"),
-          lapply(best_fridges$input_ID, function(id){
-            fluidRow(actionButton(inputId = id,
-                                  label = best_fridges[best_fridges$input_ID == id,'Nazwa']))
-            }), 
-          width = 2),
-        mainPanel(div(id="box-modelplot",
-                      " Porównanie zużycia energii ", 
-                      plotOutput("modelplot",height = "700px")))))
+  best_fridges$label <- sub("Lodówka ","",best_fridges[['Nazwa']])
+  best_fridges$label <- sub(" ","<br>",best_fridges[['label']])
+  # Replace the second ' ' with <br>
+  # spaces <- stringi::stri_locate_all(best_fridges$label, fixed = ' ')[[1]]['start']
+  
+  output$box_models <- renderUI(
+    sidebarLayout(
+      sidebarPanel(
+        h1("LODÓWKI", align="center"),
+        lapply(best_fridges$input_ID, function(id){
+          fluidRow(actionButton(inputId = id,
+                                label = HTML(best_fridges[best_fridges$input_ID == id,'label']),
+                                class = 'btn model_input_btn'))
+        }), 
+        width = 3),
+      mainPanel(div(id="box-modelplot",
+                    " Porównanie zużycia energii ", 
+                    plotOutput("modelplot",height = "700px")))))
     observe({
       lapply(best_fridges$input_ID, function(input_id){
         observeEvent(input[[input_id]],
@@ -41,7 +47,8 @@ app_server <- function( input, output, session ) {
                                                                                   'Cena'],
                                                        el_cost = el_cost))
                        })
-      })})
+      })
+      })
 }
 
 #' Get best fridges
