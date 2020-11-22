@@ -27,6 +27,10 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost)
     x_breaks <- x_breaks[-(match(end_date, x_breaks) - 1)]
   }
   
+  if(x_breaks[match(end_date, x_breaks) + 1] - end_date < 90) {
+    x_breaks <- x_breaks[-(match(end_date, x_breaks) + 1)]
+  }
+  
   # if(fut_date - x_breaks[match(fut_date, x_breaks) - 1] < 90) {
   #   x_breaks <- x_breaks[-(match(fut_date, x_breaks) - 1)]
   # }
