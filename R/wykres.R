@@ -5,7 +5,7 @@
 
 yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost) {
   cur_date <- lubridate::today()
-  years_to_go <- new_m_price / ((cur_m_power - new_m_power) * el_cost)
+  years_to_go <- get_years_to_go(cur_m_power, new_m_power, new_m_price, el_cost)
   end_date <- cur_date + lubridate::days(round(365 * years_to_go))
   fut_date <- cur_date + lubridate::days(round(1.2 * 365 * years_to_go))
   time <- c(cur_date, fut_date)
@@ -50,6 +50,12 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost)
   return(plot)
 }
 
+#' Calculate cost-effectiveness
+#' 
+#' Return, in how many years the investment will pay off
+get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
+  new_m_price / ((cur_m_power - new_m_power) * el_cost)
+}
 # 
 # cur_m_power <- 400 # kWh/rok
 # new_m_power <- 170 # kWh/rok
