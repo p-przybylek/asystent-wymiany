@@ -1,0 +1,67 @@
+#' Get best fridges
+#' 
+#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
+#' with info about most cost-efficient top_n fridges 
+get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
+  data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
+    get_years_to_go(cur_m_power, 
+                    new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
+                    new_m_price = fridges[i,'Cena'],
+                    el_cost)
+  })
+  fridges[order(fridges$years_to_go)[1:top_n],c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
+}
+
+#' Get info about attributes
+#' 
+#' @param device_type A single `string`, equal to one of the names of datasets. 
+#' For now, only 'fridges' would be accepted OR
+#' A `data.frame`, following format desribed in Details.
+#' 
+#' @details It is assumed, that each dataset is 
+#' a `data.frame`, where ALL columns following column `Zdj` describe attributes.
+#' Naturally, it has to contain EXACTLY ONE column `Zdj`.
+#' 
+#' @return A named `list`. Each element describes 1 attribute as a `list` with 3 elements:
+#'  * `name` - a single string with name of attribute
+#'  * `type` - possible values: "numeric" or "factor"
+#'  * `range` - for "numeric": c(min, max); for "factor" - levels vector
+#' 
+get_attr_info <- function(dataset = 'fridges'){
+  e <- rlang::current_env()
+  if(!(is.data.frame(dataset) || is.character(dataset) && length(dataset) == 1))
+    rlang::abort('`dataset` must be a single `string` or a `data.frame`.')
+  if(is.character(dataset)){
+    all_datasets <- data(package = 'asystentWymiany')[['results']][,'Item']
+    if(!dataset %in% all_datasets)rlang::abort(paste0('Dataset ',dataset, ' not found.'))
+    data(list = dataset, package = 'asystentWymiany', envir = e)
+    assign('dataset', base::get(dataset, envir = e), envir = e)
+  } else if(is.data.frame(dataset) && sum(colnames(dataset) == 'Zdj') != 1)
+    rlang::abort(paste0(dataset, ' must have exactly one `Zdj` column, not ', sum(colnames(dataset))))
+  cnames <- colnames(dataset)
+  chosen_cnames <- cnames[(which(cnames == 'Zdj') + 1):length(cnames)]
+  out <- lapply(chosen_cnames, function(cname){
+    if(is.numeric(dataset[[cname]])){
+      list(
+        name = cname,
+        type = 'numeric',
+        range = c(min = min(dataset[[cname]]), max = max(dataset[[cname]]))
+      )
+    } else if(is.character(dataset[[cname]]) || is.factor(dataset[[cname]])){
+      v <- as.factor(dataset[[cname]])
+      list(
+        name = cname,
+        type = 'factor',
+        range = attr(v, 'levels')
+      )
+    } else NULL
+  })
+  names(out) <- chosen_cnames
+  if(any(sapply(out, is.null))){
+    warning('Some columns are neither numeric or factor/character. Ignoring')
+    out <- out[!sapply(out, is.null)]
+  }
+  out
+}
+

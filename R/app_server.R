@@ -50,20 +50,3 @@ app_server <- function( input, output, session ) {
       })
       })
 }
-
-#' Get best fridges
-#' 
-#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-#' with info about most cost-efficient top_n fridges 
-get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
-  data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
-  fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
-    get_years_to_go(cur_m_power, 
-                    new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
-                    new_m_price = fridges[i,'Cena'],
-                    el_cost)
-  })
-  fridges[order(fridges$years_to_go)[1:top_n],c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
-  
-}
-
