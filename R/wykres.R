@@ -3,16 +3,29 @@
 #'@import ggplot2
 
 
-yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost) {
+
+yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power) {
   cur_date <- lubridate::today()
   years_to_go <- get_years_to_go(cur_m_power, new_m_power, new_m_price, el_cost)
   end_date <- cur_date + lubridate::days(round(365 * years_to_go))
   fut_date <- cur_date + lubridate::days(round(1.2 * 365 * years_to_go))
-  time <- c(cur_date, fut_date)
   
+  inter_date <- seq(lubridate::ceiling_date(cur_date, unit = "month"),
+                    lubridate::floor_date(fut_date, unit = "month"), by="months")
+  to_next_month_cost <- as.numeric(lubridate::ceiling_date(cur_date, unit = "month") - cur_date) *
+                        cur_month_power$kWh[month(cur_date)] / 30 * el_cost
+  to_last_month_cost <- abs(as.numeric(lubridate::floor_date(fut_date, unit = "month") - fut_date)) *
+    cur_month_power$kWh[month(fut_date)] / 30 * el_cost
+  month_cost <- numeric(length(inter_date) - 1 )
+  for(i in 2:length(inter_date)){
+    month_cost[i-1] <- cur_month_power$kWh[month(inter_date[i])] * el_cost
+  }
+  cost_cum <- cumsum(c(0, to_next_month_cost, month_cost))
+  
+  time <- c(cur_date, inter_date, fut_date)
   meet_cost = cur_m_power * years_to_go * el_cost
-  cur_m_cost = c(0, 1.2 * cur_m_power * years_to_go * el_cost)
-  new_m_cost = new_m_price + c(0, 1.2 * new_m_power * years_to_go * el_cost)
+  cur_m_cost = c(cost_cum, 1.2 * cur_m_power * years_to_go * el_cost)
+  new_m_cost = new_m_price + seq(0, 1.2 * new_m_power * years_to_go * el_cost, length.out = length(time))
   
   plot_data <- tidyr::pivot_longer(data.frame(time, cur_m_cost, new_m_cost),
                                   cols = -time, 
@@ -58,7 +71,13 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost)
 #' 
 #' Return, in how many years the investment will pay off
 get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
-  new_m_price / ((cur_m_power - new_m_power) * el_cost)
+  if (cur_m_power - new_m_power < 0){
+    years <- Inf
+  }
+  else{
+    new_m_price / ((cur_m_power - new_m_power) * el_cost)
+
+  }
 }
 # 
 # cur_m_power <- 400 # kWh/rok

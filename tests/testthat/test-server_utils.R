@@ -51,3 +51,8 @@ test_that('Works for data.frame',{
     test_df_2
   }))
 })
+
+#----- get_fridge_con() -----
+test_that("No error caused by get_fridge_con", {
+  expect_s3_class(get_fridge_con(), "data.frame")
+})

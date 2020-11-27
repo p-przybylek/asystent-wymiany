@@ -65,3 +65,19 @@ get_attr_info <- function(dataset = 'fridges'){
   out
 }
 
+#' Calculate power consumption per month
+#'
+#' @return monthly energy consumption data.frame with: 
+#' Month - month number as numeric
+#' FGE - monthly average power level in W as numeric
+#' kWh - monthly energy usage in kWh as numeric 
+#' 
+get_fridge_con <- function(){
+  data("electricity", package = "asystentWymiany", envir = rlang::current_env())
+  fridge_con <- Electricity[, c("FGE", "Month")]
+  monthly_con <- aggregate(FGE ~ Month, fridge_con, mean)
+  monthly_con$kWh <- monthly_con$FGE * c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) * 24 / 1000
+  monthly_con$Month <- as.numeric(monthly_con$Month)
+  round(monthly_con)
+}
+

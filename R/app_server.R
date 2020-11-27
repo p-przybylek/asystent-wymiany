@@ -14,7 +14,8 @@ app_server <- function( input, output, session ) {
   })
  
   # fridges - 5 przykładowych modeli lodówek do testu, na razie wpisane ręcznie, potem pobierane z bazy modeli
-  cur_m_cost <- 500
+  cur_month_power <- get_fridge_con()
+  cur_m_cost <- sum(cur_month_power$kWh)
   el_cost <- 0.617
   best_fridges <- get_best_fridges(cur_m_cost, el_cost)
   best_fridges$input_ID <- paste0('actionButton_',best_fridges[['ID']])
@@ -45,7 +46,8 @@ app_server <- function( input, output, session ) {
                                                                                   'Roczne_zuzycie_pradu_kWh'],
                                                        new_m_price = best_fridges[best_fridges$input_ID == input_id,
                                                                                   'Cena'],
-                                                       el_cost = el_cost))
+                                                       el_cost = el_cost,
+                                                       cur_month_power = cur_month_power))
                        })
       })
       })
