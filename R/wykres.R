@@ -1,9 +1,7 @@
-#'Yearly forecast plot
+#' Yearly forecast plot
 #'
-#'@import ggplot2
-
-
-
+#' @import ggplot2
+#' @import lubridate
 yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power) {
   cur_date <- lubridate::today()
   years_to_go <- get_years_to_go(cur_m_power, new_m_power, new_m_price, el_cost)
@@ -13,12 +11,12 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   inter_date <- seq(lubridate::ceiling_date(cur_date, unit = "month"),
                     lubridate::floor_date(fut_date, unit = "month"), by="months")
   to_next_month_cost <- as.numeric(lubridate::ceiling_date(cur_date, unit = "month") - cur_date) *
-                        cur_month_power$kWh[month(cur_date)] / 30 * el_cost
+                        cur_month_power$kWh[lubridate::month(cur_date)] / 30 * el_cost
   to_last_month_cost <- abs(as.numeric(lubridate::floor_date(fut_date, unit = "month") - fut_date)) *
-    cur_month_power$kWh[month(fut_date)] / 30 * el_cost
+    cur_month_power$kWh[lubridate::month(fut_date)] / 30 * el_cost
   month_cost <- numeric(length(inter_date) - 1 )
   for(i in 2:length(inter_date)){
-    month_cost[i-1] <- cur_month_power$kWh[month(inter_date[i])] * el_cost
+    month_cost[i-1] <- cur_month_power$kWh[lubridate::month(inter_date[i])] * el_cost
   }
   cost_cum <- cumsum(c(0, to_next_month_cost, month_cost))
   
@@ -50,8 +48,8 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   
   plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = time, y = value, col = variable)) +
     ggplot2::geom_line() +
-    ggplot2::geom_point() +
-    ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
+    #ggplot2::geom_point() +
+    #ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
     ggplot2::geom_segment(x = end_date, y = -meet_cost, xend = end_date, yend = meet_cost, col = 'black', linetype = 'dashed', size = 0.5) +
     ggplot2::scale_x_date(breaks = x_breaks) +
     ggplot2::scale_color_manual(name = 'Model:', labels = c('obecny', 'proponowany'), values = c('#ec524b', '#16a596')) +

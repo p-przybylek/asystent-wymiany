@@ -2,8 +2,9 @@
 #' 
 #' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
 #' with info about most cost-efficient top_n fridges 
-get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
+get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
   data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  fridges <- filter_by_attr(filters = filters, dataset = fridges)
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
                     new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
@@ -78,6 +79,9 @@ get_attr_info <- function(dataset = 'fridges'){
 #' @import dplyr
 #' 
 filter_by_attr <- function(filters, dataset) {
+  if(is.na(filters)) {
+    return(dataset)
+  }
   for(filter in filters) {
     name <- filter$name
     type <- filter$type
@@ -93,10 +97,11 @@ filter_by_attr <- function(filters, dataset) {
 }
 
 # przykład użycia
+# temp <- get_attr_info()
 # filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
 # filters[[1]][[3]] <- c(min = 60, max = 80)
 # filters[[2]][[3]] <- c('Tak')
-# test <- filter_by_attr(filters = filters, dataset = dataset)
+# test <- filter_by_attr(filters = filters, dataset = fridges)
 
 #' Calculate power consumption per month
 #'
