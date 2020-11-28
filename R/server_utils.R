@@ -66,6 +66,48 @@ get_attr_info <- function(dataset = 'fridges'){
   out
 }
 
+#' Create slider input
+#' 
+#' @return sliderInput from shiny package based on given label (name) and range
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+slider_el <- function(name, range) {
+  shiny::sliderInput(inputId = paste0("filter__", name, "__slider"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     min = range[1], max = range[2],
+                     value = range)
+}
+
+#' Create drop-down list
+#' 
+#' @return selectInput from shiny package based on given label (parametr name) and choices (parametr range)
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+list_el <- function(name, range) {
+  shiny::selectInput(inputId = paste0("filter__", name, "__list"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     choices = range)
+}
+
+#' Create filters as sliders and drop-down lists
+#' 
+#' @return named list of filters
+#'
+create_filters_elements <- function(attr_list) {
+  lapply(attr_list, function(list){
+    if(identical(list$type, "numeric")){
+      slider_el(list$name, list$range)
+    }else{
+      list_el(list$name, list$range)
+    }
+  })
+}
+
+
 #' Filter given dataset using a list of filters ('numeric' or 'factor' type)
 #' 
 #' @return filtered dataset
