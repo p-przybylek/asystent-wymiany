@@ -2,8 +2,9 @@
 #' 
 #' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
 #' with info about most cost-efficient top_n fridges 
-get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
+get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
   data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  fridges <- filter_by_attr(filters = filters, dataset = fridges)
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
                     new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
@@ -65,6 +66,85 @@ get_attr_info <- function(dataset = 'fridges'){
   out
 }
 
+#' Create slider input
+#' 
+#' @return sliderInput from shiny package based on given label (name) and range
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+slider_el <- function(name, range) {
+  shiny::sliderInput(inputId = paste0("filter__", name, "__slider"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     min = range[1], max = range[2],
+                     value = range)
+}
+
+#' Create drop-down list
+#' 
+#' @return selectInput from shiny package based on given label (parametr name) and choices (parametr range)
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+list_el <- function(name, range) {
+  shiny::selectInput(inputId = paste0("filter__", name, "__list"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     choices = range)
+}
+
+#' Create filters as sliders and drop-down lists
+#' 
+#' @return named list of filters
+#'
+create_filters_elements <- function(attr_list) {
+  lapply(attr_list, function(list){
+    if(identical(list$type, "numeric")){
+      slider_el(list$name, list$range)
+    }else{
+      list_el(list$name, list$range)
+    }
+  })
+}
+
+
+#' Filter given dataset using a list of filters ('numeric' or 'factor' type)
+#' 
+#' @return filtered dataset
+#' 
+#' @details it is assumed that filters variable has the same structure as in output of get_attr_info function
+#' A named `list`. Each element describes 1 filter as a `list` with 3 elements:
+#'  * `name` - a single string with name of attribute to filter by
+#'  * `type` - possible values: "numeric" or "factor"
+#'  * `range` - for "numeric": c(min, max); for "factor" - levels vector to filter by
+#' 
+#' @import dplyr
+#' 
+filter_by_attr <- function(filters, dataset) {
+  if(is.na(filters)) {
+    return(dataset)
+  }
+  for(filter in filters) {
+    name <- filter$name
+    type <- filter$type
+    range <- filter$range
+    if(type == 'numeric') {
+      dataset <- dplyr::filter(dataset, .data[[name]] > range['min'], .data[[name]] < range['max'])
+    }
+    if(type == 'factor') {
+      dataset <- dplyr::filter(dataset, .data[[name]] %in% range)
+    }
+  }
+  dataset
+}
+
+# przykład użycia
+# temp <- get_attr_info()
+# filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
+# filters[[1]][[3]] <- c(min = 60, max = 80)
+# filters[[2]][[3]] <- c('Tak')
+# test <- filter_by_attr(filters = filters, dataset = fridges)
+
 #' Calculate power consumption per month
 #'
 #' @return monthly energy consumption data.frame with: 
@@ -80,4 +160,3 @@ get_fridge_con <- function(){
   monthly_con$Month <- as.numeric(monthly_con$Month)
   round(monthly_con)
 }
-

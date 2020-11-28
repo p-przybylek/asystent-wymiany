@@ -1,7 +1,8 @@
-#'Yearly forecast plot
+#' Yearly forecast plot
 #'
-#'@import ggplot2
-
+#' @import ggplot2
+#' @import lubridate
+#' 
 
 yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power) {
   cur_date <- lubridate::today()
@@ -49,8 +50,8 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   
   plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = time, y = value, col = variable)) +
     ggplot2::geom_line() +
-    ggplot2::geom_point() +
-    ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
+    #ggplot2::geom_point() +
+    #ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
     ggplot2::geom_segment(x = end_date, y = -meet_cost, xend = end_date, yend = meet_cost, col = 'black', linetype = 'dashed', size = 0.5) +
     ggplot2::scale_x_date(breaks = x_breaks) +
     ggplot2::scale_color_manual(name = 'Model:', labels = c('obecny', 'proponowany'), values = c('#ec524b', '#16a596')) +
