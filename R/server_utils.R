@@ -65,6 +65,39 @@ get_attr_info <- function(dataset = 'fridges'){
   out
 }
 
+#' Filter given dataset using a list of filters ('numeric' or 'factor' type)
+#' 
+#' @return filtered dataset
+#' 
+#' @details it is assumed that filters variable has the same structure as in output of get_attr_info function
+#' A named `list`. Each element describes 1 filter as a `list` with 3 elements:
+#'  * `name` - a single string with name of attribute to filter by
+#'  * `type` - possible values: "numeric" or "factor"
+#'  * `range` - for "numeric": c(min, max); for "factor" - levels vector to filter by
+#' 
+#' @import dplyr
+#' 
+filter_by_attr <- function(filters, dataset) {
+  for(filter in filters) {
+    name <- filter$name
+    type <- filter$type
+    range <- filter$range
+    if(type == 'numeric') {
+      dataset <- dplyr::filter(dataset, .data[[name]] > range['min'], .data[[name]] < range['max'])
+    }
+    if(type == 'factor') {
+      dataset <- dplyr::filter(dataset, .data[[name]] %in% range)
+    }
+  }
+  dataset
+}
+
+# przykład użycia
+# filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
+# filters[[1]][[3]] <- c(min = 60, max = 80)
+# filters[[2]][[3]] <- c('Tak')
+# test <- filter_by_attr(filters = filters, dataset = dataset)
+
 #' Calculate power consumption per month
 #'
 #' @return monthly energy consumption data.frame with: 
@@ -80,4 +113,3 @@ get_fridge_con <- function(){
   monthly_con$Month <- as.numeric(monthly_con$Month)
   round(monthly_con)
 }
-
