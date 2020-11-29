@@ -170,7 +170,6 @@ filter_by_attr <- function(filters, dataset) {
     type <- filter$type
     range <- filter$range
     if(identical(type,'numeric')) {
-      print(dataset)
       dataset <- dplyr::filter(dataset, .data[[name]] >= floor(range['min']), .data[[name]] <= ceiling(range['max']))
     }
     if(identical(type,'factor')) {

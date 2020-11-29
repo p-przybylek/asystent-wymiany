@@ -33,7 +33,7 @@ app_ui <- function(request) {
                                                                     box_interfejs1("box-washing-machine", "PRALKI"),
                                                                     box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
                                                                     box_interfejs1("box-microwave", "MIKROFALÓWKI")))),
-                                      shinydashboard::tabItem(tabName = "models",uiOutput("box_models")),
+                                      shinydashboard::tabItem(tabName = "models", uiOutput("box_models")),
                                       shinydashboard::tabItem(tabName = "oferts")))),
     tags[["footer"]]("Naatu Energy", class = "footer")
   )
