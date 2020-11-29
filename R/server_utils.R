@@ -156,17 +156,18 @@ create_filters_elements <- function(attr_list) {
 #' 
 #' 
 filter_by_attr <- function(filters, dataset) {
-  if(is.na(filters)) {
+  if(all(is.na(filters))) {
     return(dataset)
   }
   for(filter in filters) {
     name <- filter$name
     type <- filter$type
     range <- filter$range
-    if(type == 'numeric') {
-      dataset <- dplyr::filter(dataset, .data[[name]] > range['min'], .data[[name]] < range['max'])
+    if(identical(type,'numeric')) {
+      print(dataset)
+      dataset <- dplyr::filter(dataset, .data[[name]] >= floor(range['min']), .data[[name]] <= ceiling(range['max']))
     }
-    if(type == 'factor') {
+    if(identical(type,'factor')) {
       dataset <- dplyr::filter(dataset, .data[[name]] %in% range)
     }
   }
@@ -177,6 +178,8 @@ filter_by_attr <- function(filters, dataset) {
 #' Calculate power consumption per month
 #' 
 #' @export
+#' 
+#' @import rlang
 #'
 #' @return monthly energy consumption data.frame with: 
 #' Month - month number as numeric
