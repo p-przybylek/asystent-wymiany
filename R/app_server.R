@@ -13,7 +13,7 @@ app_server <- function( input, output, session ) {
     shinydashboard::updateTabItems(session, "tabs", newtab)
   })
  
-  # fridges - 5 przykładowych modeli lodówek do testu, na razie wpisane ręcznie, potem pobierane z bazy modeli
+  
   cur_month_power <- get_fridge_con()
   cur_m_cost <- sum(cur_month_power$kWh)
   el_cost <- 0.617
