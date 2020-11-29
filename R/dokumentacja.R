@@ -7,7 +7,6 @@
 #' @author Piotr Sieńko
 #' @references \url{TODO}
 #' @keywords data
-#' @example asystentWymiany::Electricity
 "Electricity"
 
 #' Energooszczędne lodówki
@@ -19,6 +18,5 @@
 #' @author Paweł Morgen
 #' @references \url{TODO}
 #' @keywords data
-#' @example asystentWymiany::fridges
 "fridges"
 

@@ -114,7 +114,7 @@ slider_el <- function(name, range) {
 list_el <- function(name, range) {
   shiny::selectInput(inputId = paste0("filter__", name, "__list"),
                      label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
-                     choices = range)
+                     choices = range, multiple = TRUE, selected = range)
 }
 
 #' Create filters as sliders and drop-down lists
