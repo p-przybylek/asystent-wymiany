@@ -33,6 +33,7 @@ app_server <- function( input, output, session ) {
     sidebarLayout(
       sidebarPanel(
         h1("LODÓWKI", align="center"),
+        fluidRow(selectInput("sorting", NULL, choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany"))),
         if(is.null(best_fridges()))  shinyalert::shinyalert("",
                                                             "Nie ma takich modeli!",
                                                             type = "error",
@@ -52,14 +53,23 @@ app_server <- function( input, output, session ) {
                                                                             label = "Zastosuj",
                                                                             class = "btn filtering")))),
         width = 3),
-      mainPanel(div(id="box-modelplot",
-                    " Porównanie zużycia energii ", 
-                    plotOutput("modelplot", height = "700px")))))
+      
+      mainPanel(div(
+        div(id="box-modelplot",
+            " Porównanie zużycia energii ",
+            plotOutput("modelplot", height = "700px")),
+        div(id="box-rightsidebar",
+            "Parametry",
+            uiOutput("image"),
+            tableOutput("parameters"),
+            uiOutput("buy"))),
+        width=9)
+      ))
   
   
     observe({
       lapply(best_fridges()$input_ID, function(input_id){
-        observeEvent(input[[input_id]],
+        observeEvent(input[[input_id]], {
                      output$modelplot <- {
                        renderPlot(yearly_forecast_plot(cur_m_power = cur_m_cost,
                                                        new_m_power = best_fridges()[best_fridges()$input_ID == input_id,
@@ -68,9 +78,34 @@ app_server <- function( input, output, session ) {
                                                                                   'Cena'],
                                                        el_cost = el_cost,
                                                        cur_month_power = cur_month_power))
-                    })
+                     }
+                     output$image <- {
+                       renderUI({
+                         img <- fridges[best_fridges()[best_fridges()$input_ID == input_id,"ID"], "Zdj"]
+                         tags$img(src=img, height = 300)
+                       })}
+                     output$parameters <- {
+                       param_table <- data.frame(t(fridges[best_fridges()[best_fridges()$input_ID == input_id,"ID"], names(get_attr_info())]))
+                       rownames(param_table) <- lapply(rownames(param_table), function(rowname){
+                         stringi::stri_replace_all_fixed(rowname, "_", " ")
+                       })
+                       param_table <- tibble::rownames_to_column(param_table, "Parametry")
+                       colnames(param_table) <- NULL
+                       renderTable(param_table, width = "100%")
+                       }
+                     output$buy <-{
+                       renderUI(actionButton("buybutton","Kup teraz!"))
+                     }})
       })
     })
+    
+    observeEvent(input$buybutton,{
+      newtab <- switch(input$tabs,
+                       "models" = "oferts",
+                       "oferts" = "models")
+      shinydashboard::updateTabItems(session, "tabs", newtab)
+    })
+    
     
     filtering <- reactiveVal(0)
     
