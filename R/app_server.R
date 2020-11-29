@@ -20,6 +20,7 @@ app_server <- function( input, output, session ) {
   el_cost <- 0.617
   best_fridges <- reactive({
     out <- get_best_fridges(cur_m_cost, el_cost, filters = filters())
+    if(is.null(out)) return(NULL)
     out$input_ID <- paste0('actionButton_',out[['ID']])
     out$label <- sub("Lodówka ","",out[['Nazwa']])
     out$label <- sub(" ","<br>",out[['label']])
@@ -32,8 +33,13 @@ app_server <- function( input, output, session ) {
     sidebarLayout(
       sidebarPanel(
         h1("LODÓWKI", align="center"),
-        lapply(best_fridges()$input_ID, function(id){
-          fluidRow(actionButton(inputId = id,
+        if(is.null(best_fridges()))  shinyalert::shinyalert("",
+                                                            "Nie ma takich modeli!",
+                                                            type = "error",
+                                                            confirmButtonText = "OK",
+                                                            confirmButtonCol = "#66cdaa")
+        else lapply(best_fridges()$input_ID, function(id){
+                      fluidRow(actionButton(inputId = id,
                                 label = HTML(best_fridges()[best_fridges()$input_ID == id,'label']),
                                 class = 'btn model_input_btn'))
         }),
@@ -62,7 +68,7 @@ app_server <- function( input, output, session ) {
                                                                                   'Cena'],
                                                        el_cost = el_cost,
                                                        cur_month_power = cur_month_power))
-                       })
+                    })
       })
     })
     
