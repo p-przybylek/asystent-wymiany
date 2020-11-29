@@ -1,9 +1,22 @@
 #' Get best fridges
 #' 
+#' @inheritParams yearly_forecast_plot
+#' @param top_n liczba najleprzych modeli do pokazania
+#' @param filters filtry do zaaplikowania (być może NA)
+#' 
 #' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
 #' with info about most cost-efficient top_n fridges 
-get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
-  data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+#' @export
+#' 
+get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
+  utils::data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  if(!sprawdz_poprawnosc_lodowek(fridges))
+    shinyalert::shinyalert("",
+                           "Dane w pliku fridges są niepoprawne. Zgłoś błąd administratorowi.",
+                           type = "error",
+                           confirmButtonText = "OK",
+                           confirmButtonCol = "#66cdaa")
+  fridges <- filter_by_attr(filters = filters, dataset = fridges)
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
                     new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
@@ -15,7 +28,7 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
 
 #' Get info about attributes
 #' 
-#' @param device_type A single `string`, equal to one of the names of datasets. 
+#' @param dataset A single `string`, equal to one of the names of datasets. 
 #' For now, only 'fridges' would be accepted OR
 #' A `data.frame`, following format desribed in Details.
 #' 
@@ -27,15 +40,17 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5){
 #'  * `name` - a single string with name of attribute
 #'  * `type` - possible values: "numeric" or "factor"
 #'  * `range` - for "numeric": c(min, max); for "factor" - levels vector
+#'  
+#' @export
 #' 
 get_attr_info <- function(dataset = 'fridges'){
   e <- rlang::current_env()
   if(!(is.data.frame(dataset) || is.character(dataset) && length(dataset) == 1))
     rlang::abort('`dataset` must be a single `string` or a `data.frame`.')
   if(is.character(dataset)){
-    all_datasets <- data(package = 'asystentWymiany')[['results']][,'Item']
+    all_datasets <- utils::data(package = 'asystentWymiany')[['results']][,'Item']
     if(!dataset %in% all_datasets)rlang::abort(paste0('Dataset ',dataset, ' not found.'))
-    data(list = dataset, package = 'asystentWymiany', envir = e)
+    utils::data(list = dataset, package = 'asystentWymiany', envir = e)
     assign('dataset', base::get(dataset, envir = e), envir = e)
   } else if(is.data.frame(dataset) && sum(colnames(dataset) == 'Zdj') != 1)
     rlang::abort(paste0(dataset, ' must have exactly one `Zdj` column, not ', sum(colnames(dataset))))
@@ -65,7 +80,112 @@ get_attr_info <- function(dataset = 'fridges'){
   out
 }
 
+#' Create slider input
+#' 
+#' @param name `string` - nazwa tworzonego slidera
+#' @param range `numeric` dlugosci 2 - granica dolna i gorna tworzonego slitera
+#' 
+#' @return sliderInput from shiny package based on given label (name) and range
+#' 
+#' @export
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+slider_el <- function(name, range) {
+  shiny::sliderInput(inputId = paste0("filter__", name, "__slider"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     min = range[1], max = range[2],
+                     value = range)
+}
+
+#' Create drop-down list
+#' 
+#' @param name `string` - nazwa tworzonego slidera
+#' @param range wektor `factor` zawierajacy mozliwe do wyboru opcje
+#' 
+#' @return selectInput from shiny package based on given label (parametr name) and choices (parametr range)
+#'
+#' @export
+#'
+#' @import shiny 
+#' @import stringi
+#' 
+list_el <- function(name, range) {
+  shiny::selectInput(inputId = paste0("filter__", name, "__list"),
+                     label = paste0(stringi::stri_replace_all_fixed(name, "_", " "),":"),
+                     choices = range, multiple = TRUE, selected = range)
+}
+
+#' Create filters as sliders and drop-down lists
+#' 
+#' @export
+#' 
+#' @param attr_list `list`a generowana przez \code{\link[asystentWymiany]{get_attr_info}}
+#' 
+#' @return named list of filters
+#'
+create_filters_elements <- function(attr_list) {
+  lapply(attr_list, function(list){
+    if(identical(list$type, "numeric")){
+      slider_el(list$name, list$range)
+    }else{
+      list_el(list$name, list$range)
+    }
+  })
+}
+
+
+#' Filter given dataset using a list of filters ('numeric' or 'factor' type)
+#' 
+#' @param filters generowane w serverze, gdy user kliknie "Zastosuj" w zakładce filtry
+#' @param dataset zbior danych o modelach ze sklepow partnerow
+#' 
+#' @return filtered dataset
+#' 
+#' @details it is assumed that filters variable has the same structure as in output of get_attr_info function
+#' A named `list`. Each element describes 1 filter as a `list` with 3 elements:
+#'  * `name` - a single string with name of attribute to filter by
+#'  * `type` - possible values: "numeric" or "factor"
+#'  * `range` - for "numeric": c(min, max); for "factor" - levels vector to filter by
+#' 
+#' @export
+#' 
+#' @import dplyr
+#' 
+#' @examples
+#' temp <- get_attr_info()
+#' filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
+#' filters[[1]][[3]] <- c(min = 60, max = 80)
+#' filters[[2]][[3]] <- c('Tak')
+#' test <- filter_by_attr(filters = filters, dataset = fridges)
+#' 
+#' 
+filter_by_attr <- function(filters, dataset) {
+  if(all(is.na(filters))) {
+    return(dataset)
+  }
+  for(filter in filters) {
+    name <- filter$name
+    type <- filter$type
+    range <- filter$range
+    if(identical(type,'numeric')) {
+      print(dataset)
+      dataset <- dplyr::filter(dataset, .data[[name]] >= floor(range['min']), .data[[name]] <= ceiling(range['max']))
+    }
+    if(identical(type,'factor')) {
+      dataset <- dplyr::filter(dataset, .data[[name]] %in% range)
+    }
+  }
+  dataset
+}
+
+
 #' Calculate power consumption per month
+#' 
+#' @export
+#' 
+#' @import rlang
 #'
 #' @return monthly energy consumption data.frame with: 
 #' Month - month number as numeric
@@ -73,11 +193,10 @@ get_attr_info <- function(dataset = 'fridges'){
 #' kWh - monthly energy usage in kWh as numeric 
 #' 
 get_fridge_con <- function(){
-  data("electricity", package = "asystentWymiany", envir = rlang::current_env())
+  utils::data("electricity", package = "asystentWymiany", envir = rlang::current_env())
   fridge_con <- Electricity[, c("FGE", "Month")]
-  monthly_con <- aggregate(FGE ~ Month, fridge_con, mean)
+  monthly_con <- stats::aggregate(FGE ~ Month, fridge_con, mean)
   monthly_con$kWh <- monthly_con$FGE * c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) * 24 / 1000
   monthly_con$Month <- as.numeric(monthly_con$Month)
   round(monthly_con)
 }
-

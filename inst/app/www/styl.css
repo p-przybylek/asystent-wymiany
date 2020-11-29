@@ -70,9 +70,22 @@
   font-size: 30px;
   width: 100%;
   margin-top: 20px;}
+
 .btn.model_input_btn{
   font-size: 20px;
 }
+
+.btn.filter{
+  margin-top: 100px;
+  width:100px;
+  font-size: 20px;
+}
+
+.btn.filtering{
+  width:100px;
+  font-size: 15px;
+}
+
 .fa, .fas {
   color: #000000;
 }

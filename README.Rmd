@@ -58,8 +58,12 @@ Najlepiej jak najwięcej kodu zamykać w funkcje zdefiniowane w `R/interface_ele
 Aby je odpalić wywołujesz komendę `devtools::test()` gdy ma się `getwd()` w folderze z pakietem.
 
 ### Check
-Obok przycisku "Install and Restart" jest guzik "Check". Jak go się kliknie to R sprawdzi cały pakiet, czy jest poprawny. Nie tylko wywoła testy jednostkowe, ale też sprawdzi, czy inne rzeczy działają, czy mamy literówki(albo polskie słowa xd) w kodzie, błędy albo braki w dokumentacji i takie tam. Trwa około minuty.
+Obok przycisku "Install and Restart" jest guzik "Check". Jak go się kliknie to R sprawdzi cały pakiet, czy jest poprawny. Nie tylko wywoła testy jednostkowe, ale też sprawdzi, czy inne rzeczy działają, czy mamy literówki(albo polskie słowa xd) w kodzie, błędy albo braki w dokumentacji i takie tam. Trwa około $3$ minuty.
 
+### Dokumentacja
+Nad każdą funkcją piszemy komentarze dokumentujące jej działanie, przyjmowane parametry, zwracaną wartość, informację, że ją eksportujemy(wydaje mi się, żeby zrobić tak ze wszystkimi funkcjami, to będzie łatwo się dostać do dokumentacji xd), jakie pakiety są u niej używane oraz przykład użycia.
+
+Przykładem ładnie odokumentowanej funkcji jest `filter_by_attr` w `R/server_utilis.R`. On jest napisany po angielsku, ale wydaje mi się, że lepiej byłoby to pisać po polsku. Wydaje mi się to łatwiejsze w zrozumieniu.
 
 ## Code of Conduct
 

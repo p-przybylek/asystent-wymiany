@@ -2,6 +2,7 @@
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
+#' @export
 #' @import shiny
 #' @noRd
 app_server <- function( input, output, session ) {
@@ -32,7 +33,15 @@ app_server <- function( input, output, session ) {
           fluidRow(actionButton(inputId = id,
                                 label = HTML(best_fridges[best_fridges$input_ID == id,'label']),
                                 class = 'btn model_input_btn'))
-        }), 
+        }),
+        fluidRow(column(12, align = "center", actionButton(inputId = "filters",
+                                                           label = " + Filtry",
+                                                           class = "btn filter"))),
+        conditionalPanel("input.filters%2==1",
+                         create_filters_elements(get_attr_info()),
+                         fluidRow(column(12, align = "center", actionButton(inputId = "filtering",
+                                                                            label = "Zastosuj",
+                                                                            class = "btn filtering")))),
         width = 3),
       mainPanel(div(id="box-modelplot",
                     " Porównanie zużycia energii ", 
@@ -51,4 +60,21 @@ app_server <- function( input, output, session ) {
                        })
       })
       })
+    
+    shinyjs::onclick("filtering", {
+      filters <- lapply(get_attr_info(), function(list){
+                          filter_id <- ifelse(identical(list$type, "numeric"),
+                                              paste0("filter__", list$name, "__slider"),
+                                              paste0("filter__", list$name, "__list"))
+                          list$range <- input[[filter_id]]
+                          if(identical(list$type, "numeric")) names(list$range) <- c("min", "max")
+                          list
+                        })
+    })
+    
+    observeEvent(input[["filters"]],{
+      if(input[["filters"]]%%2==0) {
+        filters <- NA
+      }
+    })
 }

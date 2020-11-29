@@ -1,8 +1,22 @@
-#'Yearly forecast plot
+#' Yearly forecast plot
+#' 
+#' Tworzy wykres predykcji
+#' 
+#' @param cur_m_power moc aktualne posiadanego przez urzytkownika uzadzenia
+#' @param new_m_power moc proponowanego uzadzenia
+#' @param new_m_price cena proponowanego uzadzenia
+#' @param el_cost koszt pradu, ktore zuzywaja uzadzenia
+#' @param cur_month_power tabela zurzycia pradu przez aktualne uzadzenie w zaleznosci od miesiaca
+#' 
+#' @return wykres w pplot2
+#' 
+#' @export
 #'
-#'@import ggplot2
-
-
+#' @import ggplot2
+#' @import lubridate
+#' 
+#' @examples 
+#' yearly_forecast_plot(400, 170, 1200, 0.617, get_fridge_con())
 
 yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power) {
   cur_date <- lubridate::today()
@@ -13,12 +27,12 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   inter_date <- seq(lubridate::ceiling_date(cur_date, unit = "month"),
                     lubridate::floor_date(fut_date, unit = "month"), by="months")
   to_next_month_cost <- as.numeric(lubridate::ceiling_date(cur_date, unit = "month") - cur_date) *
-                        cur_month_power$kWh[month(cur_date)] / 30 * el_cost
+                        cur_month_power$kWh[lubridate::month(cur_date)] / 30 * el_cost
   to_last_month_cost <- abs(as.numeric(lubridate::floor_date(fut_date, unit = "month") - fut_date)) *
-    cur_month_power$kWh[month(fut_date)] / 30 * el_cost
+    cur_month_power$kWh[lubridate::month(fut_date)] / 30 * el_cost
   month_cost <- numeric(length(inter_date) - 1 )
   for(i in 2:length(inter_date)){
-    month_cost[i-1] <- cur_month_power$kWh[month(inter_date[i])] * el_cost
+    month_cost[i-1] <- cur_month_power$kWh[lubridate::month(inter_date[i])] * el_cost
   }
   cost_cum <- cumsum(c(0, to_next_month_cost, month_cost))
   
@@ -50,8 +64,8 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   
   plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = time, y = value, col = variable)) +
     ggplot2::geom_line() +
-    ggplot2::geom_point() +
-    ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
+    #ggplot2::geom_point() +
+    #ggplot2::geom_point(x = end_date, y = meet_cost, col = 'black') +
     ggplot2::geom_segment(x = end_date, y = -meet_cost, xend = end_date, yend = meet_cost, col = 'black', linetype = 'dashed', size = 0.5) +
     ggplot2::scale_x_date(breaks = x_breaks) +
     ggplot2::scale_color_manual(name = 'Model:', labels = c('obecny', 'proponowany'), values = c('#ec524b', '#16a596')) +
@@ -69,7 +83,20 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
 
 #' Calculate cost-effectiveness
 #' 
-#' Return, in how many years the investment will pay off
+#' @inheritParams yearly_forecast_plot
+#' 
+#' @return in how many years the investment will pay off
+#' 
+#' @export
+#' 
+#' @examples
+#' cur_m_power <- 400 # kWh/rok
+#' new_m_power <- 170 # kWh/rok
+#' new_m_price <- 1200 # PLN
+#' el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
+#' test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost, get_fridge_con())
+#' show(test_plot)
+ 
 get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
   if (cur_m_power - new_m_power < 0){
     years <- Inf
@@ -79,13 +106,3 @@ get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
 
   }
 }
-# 
-# cur_m_power <- 400 # kWh/rok
-# new_m_power <- 170 # kWh/rok
-# new_m_price <- 1200 # PLN
-# el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
-# 
-# test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost)
-# 
-# show(test_plot)
-

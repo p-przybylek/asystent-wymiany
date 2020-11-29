@@ -2,6 +2,7 @@
 #' 
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
+#' @export
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
@@ -57,9 +58,8 @@ golem_add_external_resources <- function(){
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'asystentWymiany'
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert() 
+    ),
+    shinyalert::useShinyalert() # do wyswietlania bledow itp
   )
 }
 
