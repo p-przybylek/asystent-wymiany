@@ -1,6 +1,13 @@
 #' Create tile for the first interface
+#' 
+#' Używany w app_ui.R. Generuje boxy widoczne na pierwszym interfejsie aplikacji.
 #'
-#' @return box with text
+#' @param id `string` - id boxa w CSS
+#' @param text `string` - Teks w środku boxa
+#'
+#' @return box z tekstem
+#' 
+#' @export
 #' 
 #' @import shinydashboard
 

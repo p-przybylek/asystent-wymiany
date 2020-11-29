@@ -6,6 +6,15 @@
 \usage{
 get_best_fridges(cur_m_power, el_cost, top_n = 5, filters = NA)
 }
+\arguments{
+\item{cur_m_power}{moc aktualne posiadanego przez urzytkownika uzadzenia}
+
+\item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
+
+\item{top_n}{liczba najleprzych modeli do pokazania}
+
+\item{filters}{filtry do zaaplikowania (być może NA)}
+}
 \value{
 A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
 with info about most cost-efficient top_n fridges

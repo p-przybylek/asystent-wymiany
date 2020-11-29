@@ -7,7 +7,7 @@
 get_attr_info(dataset = "fridges")
 }
 \arguments{
-\item{device_type}{A single `string`, equal to one of the names of datasets. 
+\item{dataset}{A single `string`, equal to one of the names of datasets. 
 For now, only 'fridges' would be accepted OR
 A `data.frame`, following format desribed in Details.}
 }

@@ -6,6 +6,9 @@
 \usage{
 create_filters_elements(attr_list)
 }
+\arguments{
+\item{attr_list}{`list`a generowana przez \code{\link[asystentWymiany]{get_attr_info}}}
+}
 \value{
 named list of filters
 }

@@ -6,6 +6,11 @@
 \usage{
 slider_el(name, range)
 }
+\arguments{
+\item{name}{`string` - nazwa tworzonego slidera}
+
+\item{range}{`numeric` dlugosci 2 - granica dolna i gorna tworzonego slitera}
+}
 \value{
 sliderInput from shiny package based on given label (name) and range
 }

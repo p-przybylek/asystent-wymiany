@@ -6,6 +6,11 @@
 \usage{
 list_el(name, range)
 }
+\arguments{
+\item{name}{`string` - nazwa tworzonego slidera}
+
+\item{range}{wektor `factor` zawierajacy mozliwe do wyboru opcje}
+}
 \value{
 selectInput from shiny package based on given label (parametr name) and choices (parametr range)
 }

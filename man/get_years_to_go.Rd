@@ -6,6 +6,26 @@
 \usage{
 get_years_to_go(cur_m_power, new_m_power, new_m_price, el_cost)
 }
+\arguments{
+\item{cur_m_power}{moc aktualne posiadanego przez urzytkownika uzadzenia}
+
+\item{new_m_power}{moc proponowanego uzadzenia}
+
+\item{new_m_price}{cena proponowanego uzadzenia}
+
+\item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
+}
+\value{
+in how many years the investment will pay off
+}
 \description{
-Return, in how many years the investment will pay off
+Calculate cost-effectiveness
+}
+\examples{
+cur_m_power <- 400 # kWh/rok
+new_m_power <- 170 # kWh/rok
+new_m_price <- 1200 # PLN
+el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
+test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost, get_fridge_con())
+show(test_plot)
 }

@@ -23,15 +23,8 @@ How to work in here
 UWAGA: Teoretycznie można wejść w `dev/run_dev.R` i to odpalić i powinno działać, ale mi osobiście on nie czyta `CSS`a, więc robię tak, jak jest napisane powyżej.
 
 ### Gdzie co jest i czym jest
-[*R packages* by H. Wickham](https://r-pkgs.org/)
 
-1.  Kody R są w folderze `R`.
-2.  Dane `.Rda` i `.csv` będą w folderze `data`. Nie wiem, czy będziemy je tam segregować w subfolderach. Mim zdaniem nie trzeba.
-3.  W `dev` są kody do pracy z GOLEMem.
-4.  W `inst/app/www` są `CSS`y i `JS`y.
-5.  W `man` są automatycznie generowane pliki pomocy. Nie zmieniajcie ich ręcznie - i tak się nadpiszą.
-6.  `README.md` jest generowany z `README.Rmd`. Jak już to edytujcie ten drugi.
-7.  W `tests/testthat` są pliki z testami jednostkowymi.
+[*R packages* by H. Wickham](https://r-pkgs.org/) 1. Kody R są w folderze `R`. 2. Dane `.Rda` i `.csv` będą w folderze `data`. Nie wiem, czy będziemy je tam segregować w subfolderach. Mim zdaniem nie trzeba. 3. W `dev` są kody do pracy z GOLEMem. 4. W `inst/app/www` są `CSS`y i `JS`y. 5. W `man` są automatycznie generowane pliki pomocy. Nie zmieniajcie ich ręcznie - i tak się nadpiszą. 6. `README.md` jest generowany z `README.Rmd`. Jak już to edytujcie ten drugi. 7. W `tests/testthat` są pliki z testami jednostkowymi.
 
 ### Pisanie w ui/server
 
@@ -45,7 +38,13 @@ Aby je odpalić wywołujesz komendę `devtools::test()` gdy ma się `getwd()` w 
 
 ### Check
 
-Obok przycisku "Install and Restart" jest guzik "Check". Jak go się kliknie to R sprawdzi cały pakiet, czy jest poprawny. Nie tylko wywoła testy jednostkowe, ale też sprawdzi, czy inne rzeczy działają, czy mamy literówki(albo polskie słowa xd) w kodzie, błędy albo braki w dokumentacji i takie tam. Trwa około minuty.
+Obok przycisku "Install and Restart" jest guzik "Check". Jak go się kliknie to R sprawdzi cały pakiet, czy jest poprawny. Nie tylko wywoła testy jednostkowe, ale też sprawdzi, czy inne rzeczy działają, czy mamy literówki(albo polskie słowa xd) w kodzie, błędy albo braki w dokumentacji i takie tam. Trwa około 3 minuty.
+
+### Dokumentacja
+
+Nad każdą funkcją piszemy komentarze dokumentujące jej działanie, przyjmowane parametry, zwracaną wartość, informację, że ją eksportujemy(wydaje mi się, żeby zrobić tak ze wszystkimi funkcjami, to będzie łatwo się dostać do dokumentacji xd), jakie pakiety są u niej używane oraz przykład użycia.
+
+Przykładem ładnie odokumentowanej funkcji jest `filter_by_attr` w `R/server_utilis.R`. On jest napisany po angielsku, ale wydaje mi się, że lepiej byłoby to pisać po polsku. Wydaje mi się to łatwiejsze w zrozumieniu.
 
 Code of Conduct
 ---------------

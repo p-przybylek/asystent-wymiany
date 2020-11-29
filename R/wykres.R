@@ -1,4 +1,16 @@
 #' Yearly forecast plot
+#' 
+#' Tworzy wykres predykcji
+#' 
+#' @param cur_m_power moc aktualne posiadanego przez urzytkownika uzadzenia
+#' @param new_m_power moc proponowanego uzadzenia
+#' @param new_m_price cena proponowanego uzadzenia
+#' @param el_cost koszt pradu, ktore zuzywaja uzadzenia
+#' @param cur_month_power tabela zurzycia pradu przez aktualne uzadzenie w zaleznosci od miesiaca
+#' 
+#' @return wykres w pplot2
+#' 
+#' @export
 #'
 #' @import ggplot2
 #' @import lubridate
@@ -69,7 +81,20 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
 
 #' Calculate cost-effectiveness
 #' 
-#' Return, in how many years the investment will pay off
+#' @inheritParams yearly_forecast_plot
+#' 
+#' @return in how many years the investment will pay off
+#' 
+#' @export
+#' 
+#' @examples
+#' cur_m_power <- 400 # kWh/rok
+#' new_m_power <- 170 # kWh/rok
+#' new_m_price <- 1200 # PLN
+#' el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
+#' test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost, get_fridge_con())
+#' show(test_plot)
+ 
 get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
   if (cur_m_power - new_m_power < 0){
     years <- Inf
@@ -79,13 +104,3 @@ get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
 
   }
 }
-# 
-# cur_m_power <- 400 # kWh/rok
-# new_m_power <- 170 # kWh/rok
-# new_m_price <- 1200 # PLN
-# el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
-# 
-# test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost)
-# 
-# show(test_plot)
-

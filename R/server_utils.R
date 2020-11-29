@@ -1,7 +1,13 @@
 #' Get best fridges
 #' 
+#' @inheritParams yearly_forecast_plot
+#' @param top_n liczba najleprzych modeli do pokazania
+#' @param filters filtry do zaaplikowania (być może NA)
+#' 
 #' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
 #' with info about most cost-efficient top_n fridges 
+#' @export
+#' 
 get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
   data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
   fridges <- filter_by_attr(filters = filters, dataset = fridges)
@@ -16,7 +22,7 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
 
 #' Get info about attributes
 #' 
-#' @param device_type A single `string`, equal to one of the names of datasets. 
+#' @param dataset A single `string`, equal to one of the names of datasets. 
 #' For now, only 'fridges' would be accepted OR
 #' A `data.frame`, following format desribed in Details.
 #' 
@@ -28,6 +34,8 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
 #'  * `name` - a single string with name of attribute
 #'  * `type` - possible values: "numeric" or "factor"
 #'  * `range` - for "numeric": c(min, max); for "factor" - levels vector
+#'  
+#' @export
 #' 
 get_attr_info <- function(dataset = 'fridges'){
   e <- rlang::current_env()
@@ -68,7 +76,12 @@ get_attr_info <- function(dataset = 'fridges'){
 
 #' Create slider input
 #' 
+#' @param name `string` - nazwa tworzonego slidera
+#' @param range `numeric` dlugosci 2 - granica dolna i gorna tworzonego slitera
+#' 
 #' @return sliderInput from shiny package based on given label (name) and range
+#' 
+#' @export
 #'
 #' @import shiny 
 #' @import stringi
@@ -82,7 +95,12 @@ slider_el <- function(name, range) {
 
 #' Create drop-down list
 #' 
+#' @param name `string` - nazwa tworzonego slidera
+#' @param range wektor `factor` zawierajacy mozliwe do wyboru opcje
+#' 
 #' @return selectInput from shiny package based on given label (parametr name) and choices (parametr range)
+#'
+#' @export
 #'
 #' @import shiny 
 #' @import stringi
@@ -94,6 +112,10 @@ list_el <- function(name, range) {
 }
 
 #' Create filters as sliders and drop-down lists
+#' 
+#' @export
+#' 
+#' @param attr_list `list`a generowana przez \code{\link[asystentWymiany]{get_attr_info}}
 #' 
 #' @return named list of filters
 #'
@@ -110,6 +132,9 @@ create_filters_elements <- function(attr_list) {
 
 #' Filter given dataset using a list of filters ('numeric' or 'factor' type)
 #' 
+#' @param filters generowane w serverze, gdy user kliknie "Zastosuj" w zakładce filtry
+#' @param dataset zbior danych o modelach ze sklepow partnerow
+#' 
 #' @return filtered dataset
 #' 
 #' @details it is assumed that filters variable has the same structure as in output of get_attr_info function
@@ -118,7 +143,17 @@ create_filters_elements <- function(attr_list) {
 #'  * `type` - possible values: "numeric" or "factor"
 #'  * `range` - for "numeric": c(min, max); for "factor" - levels vector to filter by
 #' 
+#' @export
+#' 
 #' @import dplyr
+#' 
+#' @examples
+#' temp <- get_attr_info()
+#' filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
+#' filters[[1]][[3]] <- c(min = 60, max = 80)
+#' filters[[2]][[3]] <- c('Tak')
+#' test <- filter_by_attr(filters = filters, dataset = fridges)
+#' 
 #' 
 filter_by_attr <- function(filters, dataset) {
   if(is.na(filters)) {
@@ -138,14 +173,10 @@ filter_by_attr <- function(filters, dataset) {
   dataset
 }
 
-# przykład użycia
-# temp <- get_attr_info()
-# filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
-# filters[[1]][[3]] <- c(min = 60, max = 80)
-# filters[[2]][[3]] <- c('Tak')
-# test <- filter_by_attr(filters = filters, dataset = fridges)
 
 #' Calculate power consumption per month
+#' 
+#' @export
 #'
 #' @return monthly energy consumption data.frame with: 
 #' Month - month number as numeric

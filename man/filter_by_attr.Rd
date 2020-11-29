@@ -6,6 +6,11 @@
 \usage{
 filter_by_attr(filters, dataset)
 }
+\arguments{
+\item{filters}{generowane w serverze, gdy user kliknie "Zastosuj" w zakładce filtry}
+
+\item{dataset}{zbior danych o modelach ze sklepow partnerow}
+}
 \value{
 filtered dataset
 }
@@ -18,4 +23,13 @@ A named `list`. Each element describes 1 filter as a `list` with 3 elements:
  * `name` - a single string with name of attribute to filter by
  * `type` - possible values: "numeric" or "factor"
  * `range` - for "numeric": c(min, max); for "factor" - levels vector to filter by
+}
+\examples{
+temp <- get_attr_info()
+filters <- list(Szerokosc_cm=temp[[3]], Sterowanie_smartfonem=temp[[8]])
+filters[[1]][[3]] <- c(min = 60, max = 80)
+filters[[2]][[3]] <- c('Tak')
+test <- filter_by_attr(filters = filters, dataset = fridges)
+
+
 }

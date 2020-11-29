@@ -6,9 +6,14 @@
 \usage{
 box_interfejs1(id, text)
 }
+\arguments{
+\item{id}{`string` - id boxa w CSS}
+
+\item{text}{`string` - Teks w środku boxa}
+}
 \value{
-box with text
+box z tekstem
 }
 \description{
-Create tile for the first interface
+Używany w app_ui.R. Generuje boxy widoczne na pierwszym interfejsie aplikacji.
 }

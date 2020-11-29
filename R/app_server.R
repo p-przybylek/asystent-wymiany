@@ -2,6 +2,7 @@
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
+#' @export
 #' @import shiny
 #' @noRd
 app_server <- function( input, output, session ) {

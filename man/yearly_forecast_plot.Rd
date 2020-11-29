@@ -12,6 +12,20 @@ yearly_forecast_plot(
   cur_month_power
 )
 }
+\arguments{
+\item{cur_m_power}{moc aktualne posiadanego przez urzytkownika uzadzenia}
+
+\item{new_m_power}{moc proponowanego uzadzenia}
+
+\item{new_m_price}{cena proponowanego uzadzenia}
+
+\item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
+
+\item{cur_month_power}{tabela zurzycia pradu przez aktualne uzadzenie w zaleznosci od miesiaca}
+}
+\value{
+wykres w pplot2
+}
 \description{
-Yearly forecast plot
+Tworzy wykres predykcji
 }
