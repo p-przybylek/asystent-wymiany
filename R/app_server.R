@@ -59,4 +59,21 @@ app_server <- function( input, output, session ) {
                        })
       })
       })
+    
+    shinyjs::onclick("filtering", {
+      filters <- lapply(get_attr_info(), function(list){
+                          filter_id <- ifelse(identical(list$type, "numeric"),
+                                              paste0("filter__", list$name, "__slider"),
+                                              paste0("filter__", list$name, "__list"))
+                          list$range <- input[[filter_id]]
+                          if(identical(list$type, "numeric")) names(list$range) <- c("min", "max")
+                          list
+                        })
+    })
+    
+    observeEvent(input[["filters"]],{
+      if(input[["filters"]]%%2==0) {
+        filters <- NA
+      }
+    })
 }
