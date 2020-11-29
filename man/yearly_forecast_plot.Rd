@@ -29,3 +29,6 @@ wykres w pplot2
 \description{
 Tworzy wykres predykcji
 }
+\examples{
+yearly_forecast_plot(400, 170, 1200, 0.617, get_fridge_con())
+}

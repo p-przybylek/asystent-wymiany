@@ -9,7 +9,7 @@
 #' @export
 #' 
 get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
-  data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  utils::data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
   fridges <- filter_by_attr(filters = filters, dataset = fridges)
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
@@ -42,9 +42,9 @@ get_attr_info <- function(dataset = 'fridges'){
   if(!(is.data.frame(dataset) || is.character(dataset) && length(dataset) == 1))
     rlang::abort('`dataset` must be a single `string` or a `data.frame`.')
   if(is.character(dataset)){
-    all_datasets <- data(package = 'asystentWymiany')[['results']][,'Item']
+    all_datasets <- utils::data(package = 'asystentWymiany')[['results']][,'Item']
     if(!dataset %in% all_datasets)rlang::abort(paste0('Dataset ',dataset, ' not found.'))
-    data(list = dataset, package = 'asystentWymiany', envir = e)
+    utils::data(list = dataset, package = 'asystentWymiany', envir = e)
     assign('dataset', base::get(dataset, envir = e), envir = e)
   } else if(is.data.frame(dataset) && sum(colnames(dataset) == 'Zdj') != 1)
     rlang::abort(paste0(dataset, ' must have exactly one `Zdj` column, not ', sum(colnames(dataset))))
@@ -187,9 +187,9 @@ filter_by_attr <- function(filters, dataset) {
 #' kWh - monthly energy usage in kWh as numeric 
 #' 
 get_fridge_con <- function(){
-  data("electricity", package = "asystentWymiany", envir = rlang::current_env())
+  utils::data("electricity", package = "asystentWymiany", envir = rlang::current_env())
   fridge_con <- Electricity[, c("FGE", "Month")]
-  monthly_con <- aggregate(FGE ~ Month, fridge_con, mean)
+  monthly_con <- stats::aggregate(FGE ~ Month, fridge_con, mean)
   monthly_con$kWh <- monthly_con$FGE * c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) * 24 / 1000
   monthly_con$Month <- as.numeric(monthly_con$Month)
   round(monthly_con)

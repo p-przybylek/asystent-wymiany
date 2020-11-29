@@ -15,6 +15,8 @@
 #' @import ggplot2
 #' @import lubridate
 #' 
+#' @examples 
+#' yearly_forecast_plot(400, 170, 1200, 0.617, get_fridge_con())
 
 yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power) {
   cur_date <- lubridate::today()
