@@ -10,6 +10,12 @@
 #' 
 get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
   utils::data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
+  if(!sprawdz_poprawnosc_lodowek(fridges))
+    shinyalert::shinyalert("",
+                           "Dane w pliku fridges są niepoprawne. Zgłoś błąd administratorowi.",
+                           type = "error",
+                           confirmButtonText = "OK",
+                           confirmButtonCol = "#66cdaa")
   fridges <- filter_by_attr(filters = filters, dataset = fridges)
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
