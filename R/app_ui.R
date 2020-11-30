@@ -18,7 +18,7 @@ app_ui <- function(request) {
                                                                    shinydashboard::sidebarMenu(id = "tabs",
                                                                                                shinydashboard::menuItem("Strona główna", tabName = "main"),
                                                                                                shinydashboard::menuItem("Modele", tabName = "models"),
-                                                                                               shinydashboard::menuItem("Oferty", tabName = "oferts"))),
+                                                                                               shinydashboard::menuItem("Oferty", tabName = "offers"))),
                                   shinydashboard::dashboardBody(
                                     shinyjs::useShinyjs(),
                                     shinydashboard::tabItems(
@@ -34,7 +34,7 @@ app_ui <- function(request) {
                                                                     box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
                                                                     box_interfejs1("box-microwave", "MIKROFALÓWKI")))),
                                       shinydashboard::tabItem(tabName = "models", uiOutput("box_models")),
-                                      shinydashboard::tabItem(tabName = "oferts")))),
+                                      shinydashboard::tabItem(tabName = "offers", uiOutput("box_offers"))))),
     tags[["footer"]]("Naatu Energy", class = "footer")
   )
 }

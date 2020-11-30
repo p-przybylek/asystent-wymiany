@@ -101,8 +101,8 @@ app_server <- function( input, output, session ) {
     
     observeEvent(input$buybutton,{
       newtab <- switch(input$tabs,
-                       "models" = "oferts",
-                       "oferts" = "models")
+                       "models" = "offers",
+                       "offers" = "models")
       shinydashboard::updateTabItems(session, "tabs", newtab)
     })
     
@@ -132,5 +132,16 @@ app_server <- function( input, output, session ) {
         list
       }))
     })
+  
+    output$box_offers <- renderUI(
+      div(fluidRow(column(12, align = "center", h1("Najlepsze oferty"))),
+      fluidRow(column(12, align = "center", actionButton("rtmodels", "Zobacz inne modele"))))
+    )
     
+    observeEvent(input$rtmodels,{
+      newtab <- switch(input$tabs,
+                       "offers" = "models",
+                       "models" = "offers")
+      shinydashboard::updateTabItems(session, "tabs", newtab)
+    })
 }
