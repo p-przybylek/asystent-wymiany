@@ -35,26 +35,22 @@ sprawdz_poprawnosc_lodowek <- function(fridges){
     print("linki do zdjęć powinny być napisami")
     poprawnosc_lodowek <- FALSE
   }
-  if(!all(stringi::stri_detect(fridges$Wymiary_WxSxG_cm,
-                              regex = "^[0-9]+\\.?[0-9]* x [0-9]+\\.?[0-9]* x [0-9]+\\.?[0-9]*$"))){
-    print("wymiary powinny być podane w postaci: '177 x 59.5 x 65.7'")
-    poprawnosc_lodowek <- FALSE
-  } else { # nastepne mozna sprawdzic tylko, jesli wymiary są poprawnie podane
-    if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "^[0-9]+\\.?[0-9]*")) ==
-                      fridges$Wysokosc_cm)){
-      print("'Wysokosc_cm' nie jest tym samym, co piewsza współrzędna 'Wymiary_WxSxG_cm'")
-      poprawnosc_lodowek <- FALSE
-    }
-    if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = " [0-9]+\\.?[0-9]*")) ==
-                      fridges$Szerokosc_cm)){
-      print("'Szerokosc_cm' nie jest tym samym, co druga współrzędna 'Wymiary_WxSxG_cm'")
-      poprawnosc_lodowek <- FALSE
-    }
-    if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "[0-9]+\\.?[0-9]*$")) ==
-           fridges$Glebokosc_cm)){
-      print("'Glebokosc_cm' nie jest tym samym, co trzecia współrzędna 'Wymiary_WxSxG_cm'")
-      poprawnosc_lodowek <- FALSE
-    }}
+   # # nastepne mozna sprawdzic tylko, jesli wymiary są poprawnie podane
+   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "^[0-9]+\\.?[0-9]*")) ==
+   #                    fridges$Wysokosc_cm)){
+   #    print("'Wysokosc_cm' nie jest tym samym, co piewsza współrzędna 'Wymiary_WxSxG_cm'")
+   #    poprawnosc_lodowek <- FALSE
+   #  }
+   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = " [0-9]+\\.?[0-9]*")) ==
+   #                    fridges$Szerokosc_cm)){
+   #    print("'Szerokosc_cm' nie jest tym samym, co druga współrzędna 'Wymiary_WxSxG_cm'")
+   #    poprawnosc_lodowek <- FALSE
+   #  }
+   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "[0-9]+\\.?[0-9]*$")) ==
+   #         fridges$Glebokosc_cm)){
+   #    print("'Glebokosc_cm' nie jest tym samym, co trzecia współrzędna 'Wymiary_WxSxG_cm'")
+   #    poprawnosc_lodowek <- FALSE
+   #  }}
   if(!all(fridges$Pojemnosc_uzytkowa_chlodziarki_l > 0)){
     print("Lodówna powinna mieć dodatnią pojemność")
     poprawnosc_lodowek <- FALSE
@@ -83,14 +79,14 @@ sprawdz_poprawnosc_lodowek <- function(fridges){
     print("Kolor powinien być napisem")
     poprawnosc_lodowek <- FALSE
   }
-  if(!all(stringi::stri_detect(fridges$Klasa_zamrazarki, regex = "\\*"))){
-    print("Przyjżyj się klasie zamrażarki, nie jestem pewien, czy jest poprawna") #TODO(Adam, doiedzieć się, jakie klasy zamrażarki są poprawne)
-    poprawnosc_lodowek <- FALSE
-  }
-  if(class(fridges$Klasa_klimatyczna) != "character"){
-    print("'Klasa_klimatyczna' powinna być napisem")
-    poprawnosc_lodowek <- FALSE
-  }
+  # if(!all(stringi::stri_detect(fridges$Klasa_zamrazarki, regex = "\\*"))){
+  #   print("Przyjżyj się klasie zamrażarki, nie jestem pewien, czy jest poprawna") #TODO(Adam, doiedzieć się, jakie klasy zamrażarki są poprawne)
+  #   poprawnosc_lodowek <- FALSE
+  # }
+  # if(class(fridges$Klasa_klimatyczna) != "character"){
+  #   print("'Klasa_klimatyczna' powinna być napisem")
+  #   poprawnosc_lodowek <- FALSE
+  # }
   if(!all(stringi::stri_sub(fridges$Klasa_energetyczna, 1, 1) == "A")){
     print("W bazie powinny być tylko energooszczędne lodówki")
     poprawnosc_lodowek <- FALSE

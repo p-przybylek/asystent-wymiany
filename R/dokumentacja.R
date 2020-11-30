@@ -11,7 +11,7 @@
 
 #' Energooszczędne lodówki
 #' 
-#' @description Ramka zawiera zbiór logówek energooszczędnych możliwych do zaproponowania użytkownikowi. Zawiera wszystkie ich paametry oraz link do sklepu.
+#' @description Ramka zawiera zbiór logówek energooszczędnych możliwych do zaproponowania użytkownikowi.
 #' 
 #' @name fridges
 #' @docType data
@@ -20,3 +20,13 @@
 #' @keywords data
 "fridges"
 
+#' Energooszczędne lodówki
+#' 
+#' @description Ramka zawiera zbiór telewizorów energooszczędnych możliwych do zaproponowania użytkownikowi.
+#' 
+#' @name tvs
+#' @docType data
+#' @author Paweł Morgen
+#' @references \url{TODO}
+#' @keywords data
+"tvs"
