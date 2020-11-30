@@ -43,10 +43,37 @@
   font-weight: bold;
   font-size: 30px;
   text-align: center;
-  padding-right: 50px;
-  padding-left: 50px;
+  width: 68%;
+  margin: 1%;
+  padding: 1%;
+  float: left;
 }
 
+#box-rightsidebar{
+  height: 800px;
+  background-color: #ff8000;
+  color: #ffffff;
+  border-radius: 40px;
+  border: none;
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+  width: 28%;
+  margin: 1%;
+  padding: 1%;
+  float: left;
+}
+
+#parameters{
+  height: 300px;
+  overflow-y: auto;
+  font-size: 15px;
+}
+
+#buybutton{
+  border: 4px solid white;
+}
 .box {
   background-color: #ff8000;
   color: #ffffff;

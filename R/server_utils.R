@@ -17,13 +17,14 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
                            confirmButtonText = "OK",
                            confirmButtonCol = "#66cdaa")
   fridges <- filter_by_attr(filters = filters, dataset = fridges)
+  if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
                     new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
                     new_m_price = fridges[i,'Cena'],
                     el_cost)
   })
-  fridges[order(fridges$years_to_go)[1:top_n],c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
+  fridges[head(order(fridges$years_to_go), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
 }
 
 #' Get info about attributes
@@ -170,7 +171,6 @@ filter_by_attr <- function(filters, dataset) {
     type <- filter$type
     range <- filter$range
     if(identical(type,'numeric')) {
-      print(dataset)
       dataset <- dplyr::filter(dataset, .data[[name]] >= floor(range['min']), .data[[name]] <= ceiling(range['max']))
     }
     if(identical(type,'factor')) {
