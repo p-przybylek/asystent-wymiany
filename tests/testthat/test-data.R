@@ -33,19 +33,19 @@ test_that('sprawdz_poprawnosc_lodowek wykryje bledne dane',{
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,8] <- "190.5x70x67.6"
+  bledne_dane[1,8] <- NA
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,9] <- 180
+  bledne_dane[1,9] <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,10] <- 65
+  bledne_dane[1,10] <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,11] <- 67.61
+  bledne_dane[1,11] <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
@@ -73,11 +73,11 @@ test_that('sprawdz_poprawnosc_lodowek wykryje bledne dane',{
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,19] <- ""
+  bledne_dane[1,18] <- NA
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,21] <- "B"
+  bledne_dane[1,'Klasa_energetyczna'] <- 'Z' 
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
 }))
 

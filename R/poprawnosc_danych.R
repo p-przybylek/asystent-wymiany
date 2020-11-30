@@ -35,22 +35,22 @@ sprawdz_poprawnosc_lodowek <- function(fridges){
     print("linki do zdjęć powinny być napisami")
     poprawnosc_lodowek <- FALSE
   }
-   # # nastepne mozna sprawdzic tylko, jesli wymiary są poprawnie podane
-   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "^[0-9]+\\.?[0-9]*")) ==
-   #                    fridges$Wysokosc_cm)){
-   #    print("'Wysokosc_cm' nie jest tym samym, co piewsza współrzędna 'Wymiary_WxSxG_cm'")
-   #    poprawnosc_lodowek <- FALSE
-   #  }
-   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = " [0-9]+\\.?[0-9]*")) ==
-   #                    fridges$Szerokosc_cm)){
-   #    print("'Szerokosc_cm' nie jest tym samym, co druga współrzędna 'Wymiary_WxSxG_cm'")
-   #    poprawnosc_lodowek <- FALSE
-   #  }
-   #  if(!all(as.numeric(stringi::stri_extract(fridges$Wymiary_WxSxG_cm, regex = "[0-9]+\\.?[0-9]*$")) ==
-   #         fridges$Glebokosc_cm)){
-   #    print("'Glebokosc_cm' nie jest tym samym, co trzecia współrzędna 'Wymiary_WxSxG_cm'")
-   #    poprawnosc_lodowek <- FALSE
-   #  }}
+  if(class(fridges$Firma) != "character"){
+    print("firmy powinny być napisami")
+    poprawnosc_lodowek <- FALSE
+  }
+  if(!all(fridges$Wysokosc_cm > 0)){
+    print("Lodówna powinna mieć dodatnią wysokosc")
+    poprawnosc_lodowek <- FALSE
+  }
+  if(!all(fridges$Glebokosc_cm > 0)){
+    print("Lodówna powinna mieć dodatnią głębokość")
+    poprawnosc_lodowek <- FALSE
+  }
+  if(!all(fridges$Szerokosc_cm > 0)){
+    print("Lodówna powinna mieć dodatnią szerokość")
+    poprawnosc_lodowek <- FALSE
+  }
   if(!all(fridges$Pojemnosc_uzytkowa_chlodziarki_l > 0)){
     print("Lodówna powinna mieć dodatnią pojemność")
     poprawnosc_lodowek <- FALSE
