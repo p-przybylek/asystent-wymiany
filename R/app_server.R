@@ -82,7 +82,7 @@ app_server <- function( input, output, session ) {
                      output$image <- {
                        renderUI({
                          img <- fridges[best_fridges()[best_fridges()$input_ID == input_id,"ID"], "Zdj"]
-                         tags$img(src=img, height = 300)
+                         tags$img(src=img, width= "90%")
                        })}
                      output$parameters <- {
                        param_table <- data.frame(t(fridges[best_fridges()[best_fridges()$input_ID == input_id,"ID"], names(get_attr_info())]))
