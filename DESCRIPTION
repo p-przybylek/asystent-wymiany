@@ -37,4 +37,5 @@ RoxygenNote: 7.1.1
 URL: https://github.com/p-przybylek/asystent-wymiany
 BugReports: https://github.com/p-przybylek/asystent-wymiany/issues
 Suggests: 
-    testthat
+    testthat,
+    ddpcr
