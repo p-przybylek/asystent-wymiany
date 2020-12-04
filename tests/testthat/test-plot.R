@@ -20,6 +20,19 @@ test_that("Plot works and proper data",{
   expect_equal(p1$data$time[seq(1, n, by=2)], p1$data$time[seq(2, n, by=2)]) # daty są takie same
   expect_equal(unique(p1$data$variable), c("cur_m_cost", "new_m_cost"))
   })
+
+test_that("proper dataset for tv plot is created",{
+   stand_con <- 0.5
+   on_con <- 200
+   cur_month_power <- get_tv_con() 
+   new_month_power <- get_new_tv_con(stand_con, on_con, cur_month_power) 
+   new_m_power <- sum(new_month_power)
+   cur_m_power <- sum(cur_month_power$kWh)
+   el_cost <- 0.617
+   new_m_price <- 1000
+   expect_s3_class(yearly_data_to_plot(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power, new_month_power),
+                   "data.frame")
+})
          
 
 

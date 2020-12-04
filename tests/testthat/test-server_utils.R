@@ -56,3 +56,14 @@ test_that('Works for data.frame',{
 test_that("No error caused by get_fridge_con", {
   expect_s3_class(get_fridge_con(), "data.frame")
 })
+#----- get_tv_con() -----
+test_that("No error caused by get_fridge_con", {
+  expect_s3_class(get_tv_con(), "data.frame")
+  expect_setequal(dim(get_tv_con()), c(12, 5))
+})
+
+#----- get_new_tv_con() -----
+test_that("No error caused by get_fridge_con", {
+  expect_setequal(length(get_new_tv_con(0.5, 100, get_tv_con())), 12)
+})
+

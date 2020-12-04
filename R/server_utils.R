@@ -200,3 +200,42 @@ get_fridge_con <- function(){
   monthly_con$Month <- as.numeric(monthly_con$Month)
   round(monthly_con)
 }
+
+#' Calculate power consumption and usage time per month for current tv
+#' @import stats
+#'
+#' @return monthly energy consumption data.frame with: 
+#' Month - month number as numeric
+#' TVE - monthly average power level in W as numeric
+#' kWh - monthly energy usage in kWh as numeric 
+#' Off - average number of minutes with turned off tv /each month/ as 
+#' On - average monthly number of minutes with turned on tv /each month
+get_tv_con <- function(){
+  
+  
+  utils::data("electricity", package = "asystentWymiany", envir = rlang::current_env())
+  tv_time <- Electricity[, c("UNIX_TS", "TVE")]
+  tv_time$Month <- substr(as.POSIXct(tv_time$UNIX_TS, origin = "1970-01-01"), 6, 7)
+  
+  months <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+  monthly_con <- stats::aggregate(TVE ~ Month, tv_time, mean) # Mean monthly power consuption 
+  monthly_con$kWh <- monthly_con$TVE * months * 24 / 1000
+  
+  
+  tv_time$Usage <- ifelse(tv_time$TVE > 60, T, F)
+  summed_time <- table(tv_time$Usage, tv_time$Month)[1,]  + table(tv_time$Usage, tv_time$Month)[2,]
+  monthly_con$Off <- table(tv_time$Usage, tv_time$Month)[1,] / summed_time * months * 24 * 60# average number of minutes in each month with turned off tv
+  monthly_con$On <- table(tv_time$Usage, tv_time$Month)[2,] / summed_time* months * 24 * 60 #turned on
+  return(monthly_con)
+}
+
+#' Calculate power consumption per month for new tv
+#' @param stand_con stanby power consumption
+#' @param on_con running power consumption
+#' @param monthly_con dataset produced by get_fridge_con
+#' 
+#' @return monthly energy consumption vector in kWh
+get_new_tv_con <- function(stand_con, on_con, monthly_con){
+  
+  new_tv_cost <- monthly_con$On * on_con / (60 * 1000) + monthly_con$Off*stand_con / (60 * 1000) # to kWh
+}
