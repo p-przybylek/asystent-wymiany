@@ -293,3 +293,23 @@ get_tv_con <- function(){
 get_new_tv_con <- function(stand_con, on_con, monthly_con){
   monthly_con$On * on_con / (60 * 1000) + monthly_con$Off*stand_con / (60 * 1000) # to kWh
 }
+
+
+#' Get offers for a given model and type of device
+#' 
+#' @param id id of the device for which we want to get offers
+#' @param type_of_device `string` that determines the type of device.
+#' For now, only 'fridges' or 'tvs' would be accepted 
+#' 
+#' @return A data.frame with 3 columns: Cena, Sklep, URL
+#'
+#' @export
+#' @import rlang
+#' 
+get_offers <- function(id, type_of_device){
+  if(!type_of_device %in% c("fridges","tvs"))rlang::abort(paste0('Type of device not found.'))
+  all_offers <- get(utils::data(list = paste0(type_of_device, '_offers'), package = 'asystentWymiany', envir = rlang::current_env()))
+  all_offers[all_offers$ID == id,c("Cena","Sklep","URL")]
+  # generowanie przyciskow? 
+}
+
