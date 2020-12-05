@@ -39,7 +39,6 @@ app_server <- function( input, output, session ) {
   # spaces <- stringi::stri_locate_all(best_models()$label, fixed = ' ')[[1]]['start']
   
   tv_con <- reactive({
-    browser()
     if(!is.na(urzadzenie()) & urzadzenie() == "tvs")
       get_tv_con()
     else

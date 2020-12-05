@@ -50,16 +50,16 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   x_breaks <- c(x_breaks, seq(from = x_breaks[(match(end_date, x_breaks)-1)]+lubridate::years(1), to = fut_date, by = 'year'))
   # x_breaks <- c(x_breaks, seq(from = x_breaks[(match(end_date, x_breaks)-1)]+years(1), to = fut_date, by = 'year'), fut_date)
   
-  if(end_date - x_breaks[match(end_date, x_breaks) - 1] < 90) {
+  if(end_date - x_breaks[match(end_date, x_breaks) - 1] < 120) {
     x_breaks <- x_breaks[-(match(end_date, x_breaks) - 1)]
   }
   
-  if(x_breaks[match(end_date, x_breaks) + 1] - end_date < 90) {
+  if(x_breaks[match(end_date, x_breaks) + 1] - end_date < 120) {
     x_breaks <- x_breaks[-(match(end_date, x_breaks) + 1)]
   }
   
   # if(fut_date - x_breaks[match(fut_date, x_breaks) - 1] < 90) {
-  #   x_breaks <- x_breaks[-(match(fut_date, x_breaks) - 1)]
+  #  x_breaks <- x_breaks[-(match(fut_date, x_breaks) - 1)]
   # }
   
   plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = time, y = value, col = variable)) +
@@ -71,9 +71,9 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
     ggplot2::scale_color_manual(name = 'Model:', labels = c('obecny', 'proponowany'), values = c('#ec524b', '#16a596')) +
     ggplot2::xlab('Data') +
     ggplot2::ylab('Skumulowany koszt (PLN)') +
-    ggplot2::annotate(geom = 'text', x = cur_date + (fut_date - cur_date) / 2, y = 0, label = paste('Lat do zwrotu inwestycji:', round(years_to_go, 2))) +
-    ggplot2::annotate(geom = 'text', x = cur_date + (fut_date - cur_date) / 2, y = 0.05 * max(plot_data$value), label = paste('Koszt zakupu:', round(new_m_price, 2), 'PLN')) +
-    ggplot2::theme_bw() +
+    ggplot2::annotate(geom = 'text', x = cur_date + (fut_date - cur_date) / 2, y = 0, label = paste('Lat do zwrotu inwestycji:', round(years_to_go, 2)), size = 6) +
+    ggplot2::annotate(geom = 'text', x = cur_date + (fut_date - cur_date) / 2, y = 0.05 * max(plot_data$value), label = paste('Koszt zakupu:', round(new_m_price, 2), 'PLN'), size = 6) +
+    ggplot2::theme_bw(base_size = 20) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5),
           legend.position = 'top',
           panel.grid.minor.x = ggplot2::element_blank()
@@ -179,3 +179,27 @@ yearly_data_to_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost, 
                                    values_to = "value")
 }
 
+#' @import magrittr
+#' @import tidyr
+monthly_savings_plot <- function(monthly_con, new_m_price, years_to_go, el_cost) {
+  months <- c('Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień')
+  plot_data <- data.frame(month = factor(x = months, levels = months), old = monthly_con$old * el_cost, new = monthly_con$new * el_cost)
+  plot_data <- plot_data %>% tidyr::pivot_longer(cols = -month, names_to = 'variable', values_to = 'value')
+  arrow_data <- data.frame(x = seq(1, 12, 1) - 0.125, y = monthly_con$old * el_cost, yend = monthly_con$new * el_cost)
+  label_data <- data.frame(x = seq(1, 12, 1) - 0.125, y = (monthly_con$old * el_cost - monthly_con$new * el_cost) / 2 + monthly_con$new * el_cost, label = format(round(monthly_con$old*el_cost - monthly_con$new*el_cost, 2), nsmall=2))
+  plot <- ggplot2::ggplot(data = plot_data, ggplot2::aes(x = month, y = value, fill = variable)) +
+    ggplot2::geom_bar(stat = 'identity', position = 'dodge', width = 0.5) +
+    ggplot2::xlab('Miesiąc') +
+    ggplot2::ylab('Koszt użytkowania (PLN)') +
+    ggplot2::scale_fill_manual(name = 'Model:', labels = c('proponowany', 'obecny'), values = c('#16a596', '#ec524b')) +
+    ggplot2::annotate(geom = 'label', x = 10, y = max(plot_data$value) - 1, label = paste('Cena zakupu: ', format(round(sum(new_m_price), 2), nsmall=2), 'PLN \n Roczna oszczędność: ', format(round(sum(monthly_con$old*el_cost - monthly_con$new*el_cost), 2), nsmall=2), 'PLN'), fill = '#16a596', colour = 'white', fontface = 'bold', size = 6) +
+    ggplot2::theme_bw(base_size = 20) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5), legend.position = 'top'
+    )
+  for(i in 1:12) {
+    plot <- plot +
+      ggplot2::annotate(geom = 'segment', x = arrow_data$x[i], xend = arrow_data$x[i], y = arrow_data$y[i], yend = arrow_data$yend[i], arrow = ggplot2::arrow(ends = 'last')) +
+      ggplot2::annotate(geom = 'text', x = label_data$x[i], y = label_data$y[i], label = label_data$label[i], colour = '#16a596', angle = 90, vjust = -0.2, size = 5, fontface = 'bold')
+  }
+  return(plot)
+}
