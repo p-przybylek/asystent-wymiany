@@ -1,3 +1,24 @@
+#' Get best models
+#' 
+#' @inheritParams yearly_forecast_plot
+#' @param urzadzenie typ urzadzenia do wyswietlenia
+#' @param top_n liczba najleprzych modeli do pokazania
+#' @param filters filtry do zaaplikowania (być może NA)
+#' 
+#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
+#' with info about most cost-efficient top_n fridges 
+#' @export
+#' 
+get_best_models <- function(urzadzenie, cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
+  if(is.na(urzadzenie)) # aplikacja dopiero sie odpala
+    return(NULL)
+  
+  return(switch(urzadzenie, # odpala odpowiednia funkcje dla danego urzadzenia
+                "fridges" = get_best_fridges(cur_m_power, el_cost, top_n, filters),
+                "tvs"     = get_best_tvs    (cur_m_power, el_cost, tv_con, top_n, filters)))
+}
+
+
 #' Get best fridges
 #' 
 #' @inheritParams yearly_forecast_plot
@@ -8,7 +29,7 @@
 #' with info about most cost-efficient top_n fridges 
 #' @export
 #' 
-get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
+get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA){
   utils::data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
   if(!sprawdz_poprawnosc_lodowek(fridges))
     shinyalert::shinyalert("",
@@ -25,6 +46,38 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
                     el_cost)
   })
   fridges[head(order(fridges$years_to_go), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
+}
+
+#' Get best TV
+#' 
+#' @inheritParams yearly_forecast_plot
+#' @param top_n liczba najleprzych modeli do pokazania
+#' @param filters filtry do zaaplikowania (być może NA)
+#' 
+#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
+#' with info about most cost-efficient top_n fridges 
+#' @export
+#' 
+get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
+  utils::data('tvs', package = 'asystentWymiany', envir = rlang::current_env())
+  if(!sprawdz_poprawnosc_tv(tvs))
+    shinyalert::shinyalert("",
+                           "Dane w pliku tvs są niepoprawne. Zgłoś błąd administratorowi.",
+                           type = "error",
+                           confirmButtonText = "OK",
+                           confirmButtonCol = "#66cdaa")
+  tvs <- filter_by_attr(filters = filters, dataset = tvs)
+  if(nrow(tvs) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
+  
+  tvs$years_to_go <- sapply(1:nrow(tvs), function(i){
+    get_years_to_go(cur_m_power,
+                    new_m_power = sum(get_new_tv_con(tvs[i,"Pobor_mocy_tryb_czuwania_W"],
+                                                     tvs[i,"Pobor_mocy_tryb_wlaczenia_W"],
+                                                     tv_con)),
+                    new_m_price = tvs[i,'Cena'],
+                    el_cost)
+  })
+  tvs[head(order(tvs$years_to_go), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go")]
 }
 
 #' Get info about attributes
@@ -44,7 +97,7 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n=5, filters = NA){
 #'  
 #' @export
 #' 
-get_attr_info <- function(dataset = 'fridges'){
+get_attr_info <- function(dataset){
   e <- rlang::current_env()
   if(!(is.data.frame(dataset) || is.character(dataset) && length(dataset) == 1))
     rlang::abort('`dataset` must be a single `string` or a `data.frame`.')
@@ -204,6 +257,7 @@ get_fridge_con <- function(){
 #' Calculate power consumption and usage time per month for current tv
 #' @import stats
 #'
+#' @export
 #' @return monthly energy consumption data.frame with: 
 #' Month - month number as numeric
 #' TVE - monthly average power level in W as numeric
@@ -222,11 +276,11 @@ get_tv_con <- function(){
   monthly_con$kWh <- monthly_con$TVE * months * 24 / 1000
   
   
-  tv_time$Usage <- ifelse(tv_time$TVE > 60, T, F)
+  tv_time$Usage <- ifelse(tv_time$TVE > 60, T, F) # 60 to zużycie graniczne powyżej którego interpretujemy TV jako włączony
   summed_time <- table(tv_time$Usage, tv_time$Month)[1,]  + table(tv_time$Usage, tv_time$Month)[2,]
   monthly_con$Off <- table(tv_time$Usage, tv_time$Month)[1,] / summed_time * months * 24 * 60# average number of minutes in each month with turned off tv
   monthly_con$On <- table(tv_time$Usage, tv_time$Month)[2,] / summed_time* months * 24 * 60 #turned on
-  return(monthly_con)
+  monthly_con
 }
 
 #' Calculate power consumption per month for new tv
@@ -234,8 +288,8 @@ get_tv_con <- function(){
 #' @param on_con running power consumption
 #' @param monthly_con dataset produced by get_fridge_con
 #' 
+#' @export
 #' @return monthly energy consumption vector in kWh
 get_new_tv_con <- function(stand_con, on_con, monthly_con){
-  
-  new_tv_cost <- monthly_con$On * on_con / (60 * 1000) + monthly_con$Off*stand_con / (60 * 1000) # to kWh
+  monthly_con$On * on_con / (60 * 1000) + monthly_con$Off*stand_con / (60 * 1000) # to kWh
 }

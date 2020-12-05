@@ -4,7 +4,7 @@
 \alias{get_attr_info}
 \title{Get info about attributes}
 \usage{
-get_attr_info(dataset = "fridges")
+get_attr_info(dataset)
 }
 \arguments{
 \item{dataset}{A single `string`, equal to one of the names of datasets. 

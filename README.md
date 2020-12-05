@@ -24,7 +24,15 @@ UWAGA: Teoretycznie można wejść w `dev/run_dev.R` i to odpalić i powinno dzi
 
 ### Gdzie co jest i czym jest
 
-[*R packages* by H. Wickham](https://r-pkgs.org/) 1. Kody R są w folderze `R`. 2. Dane `.Rda` i `.csv` będą w folderze `data`. Nie wiem, czy będziemy je tam segregować w subfolderach. Mim zdaniem nie trzeba. 3. W `dev` są kody do pracy z GOLEMem. 4. W `inst/app/www` są `CSS`y i `JS`y. 5. W `man` są automatycznie generowane pliki pomocy. Nie zmieniajcie ich ręcznie - i tak się nadpiszą. 6. `README.md` jest generowany z `README.Rmd`. Jak już to edytujcie ten drugi. 7. W `tests/testthat` są pliki z testami jednostkowymi.
+[*R packages* by H. Wickham](https://r-pkgs.org/)
+
+1.  Kody R są w folderze `R`.
+2.  Dane `.Rda` i `.csv` będą w folderze `data`. Nie wiem, czy będziemy je tam segregować w subfolderach. Mim zdaniem nie trzeba.
+3.  W `dev` są kody do pracy z GOLEMem.
+4.  W `inst/app/www` są `CSS`y i `JS`y.
+5.  W `man` są automatycznie generowane pliki pomocy. Nie zmieniajcie ich ręcznie - i tak się nadpiszą.
+6.  `README.md` jest generowany z `README.Rmd`. Jak już to edytujcie ten drugi.
+7.  W `tests/testthat` są pliki z testami jednostkowymi.
 
 ### Pisanie w ui/server
 

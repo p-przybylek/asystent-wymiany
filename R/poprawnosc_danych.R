@@ -96,3 +96,8 @@ sprawdz_poprawnosc_lodowek <- function(fridges){
   return(poprawnosc_lodowek)
 }
 
+
+
+sprawdz_poprawnosc_tv <- function(fridges){ #TODO()
+  TRUE
+}

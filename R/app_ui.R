@@ -7,8 +7,7 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # Leave this function for adding external resources
-    golem_add_external_resources(),
+    golem_add_external_resources(), # Leave this function for adding external resources
     shinydashboard::dashboardPage(title = "Asystent Wymiany",
                                   shinydashboard::dashboardHeader(title = "ASYSTENT WYMIANY SPRZĘTU RTV I AGD",
                                                                   titleWidth = 600,
@@ -20,7 +19,6 @@ app_ui <- function(request) {
                                                                                                shinydashboard::menuItem("Modele", tabName = "models"),
                                                                                                shinydashboard::menuItem("Oferty", tabName = "offers"))),
                                   shinydashboard::dashboardBody(
-                                    shinyjs::useShinyjs(),
                                     shinydashboard::tabItems(
                                       shinydashboard::tabItem(tabName = "main",
                                                               fluidRow(column(12, align = "center", selectInput("sorting", NULL, choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany")))),
@@ -59,7 +57,8 @@ golem_add_external_resources <- function(){
       path = app_sys('app/www'),
       app_title = 'asystentWymiany'
     ),
-    shinyalert::useShinyalert() # do wyswietlania bledow itp
+    shinyalert::useShinyalert(), # do wyswietlania bledow itp
+    shinyjs::useShinyjs()        # do reagowania na eventy itp
   )
 }
 
