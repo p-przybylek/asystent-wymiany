@@ -226,7 +226,7 @@ app_server <- function( input, output, session ) {
                                                                        br(),
                                                                        p(paste0(list$Cena, " zł"), class = "text_price"),
                                                                        tags$a(href=list$URL,
-                                                                              actionButton(paste("shop_", list$NR), "Przejdź do sklepu", class = "shops"),
+                                                                              actionButton(paste("shop_", list$NR), "Przejdź", class = "shops"),
                                                                               target="_blank"))
                                                  })))})
     
