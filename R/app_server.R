@@ -216,7 +216,7 @@ app_server <- function( input, output, session ) {
     
     output$id_offers <- renderUI({
         all_offers <- get_offers(urzadzenie_id(), urzadzenie())
-        utils::data(list = "shops_logo.rda", package = 'asystentWymiany', envir = rlang::current_env())
+        utils::data(list = "shops_logo", package = 'asystentWymiany', envir = rlang::current_env())
         fluidRow(column(12, offset = (12-round(12/length(all_offers))*length(all_offers))/2,
                                                  align = "center",
                                                  lapply(all_offers, function(list){
