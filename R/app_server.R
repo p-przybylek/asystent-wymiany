@@ -89,6 +89,10 @@ app_server <- function( input, output, session ) {
                        "models" = "main",
                        "main" = "models")
       shinydashboard::updateTabItems(session, "tabs", newtab)
+      output$modelplot <- renderUI({})
+      output$image <- renderUI({})
+      output$parameters <- renderTable({})
+      output$buy <- renderUI({})
     })
   
     observe({
@@ -153,6 +157,7 @@ app_server <- function( input, output, session ) {
       })
     })
     
+    
     observeEvent(input$buybutton,{
       newtab <- switch(input$tabs,
                        "models" = "offers",
@@ -173,9 +178,14 @@ app_server <- function( input, output, session ) {
       isolate({
         if(is.null(input[["filters"]])){ # niema jeszcze filterow - dopiero weszlismy do panelu 2
           return(NA)
-        }
+      }
       
-        lapply(get_attr_info(urzadzenie()), function(list){
+      output$modelplot <- renderUI({})
+      output$image <- renderUI({})
+      output$parameters <- renderTable({})
+      output$buy <- renderUI({})  
+      
+      lapply(get_attr_info(urzadzenie()), function(list){
           filter_id <- ifelse(identical(list$type, "numeric"),
                               paste0("filter__", list$name, "__slider"),
                               paste0("filter__", list$name, "__list"))
@@ -204,7 +214,21 @@ app_server <- function( input, output, session ) {
                       urzadzenie_id(id)
     })})})
     
-    output$id_offers <- renderUI(fluidRow(get_offers(urzadzenie_id(), urzadzenie())))
+    output$id_offers <- renderUI({
+        all_offers <- get_offers(urzadzenie_id(), urzadzenie())
+        fluidRow(column(12, offset = (12-round(12/length(all_offers))*length(all_offers))/2,
+                                                 align = "center",
+                                                 lapply(all_offers, function(list){
+                                                   shinydashboard::box(width = round(12/length(all_offers)), 
+                                                                       class = "box", 
+                                                                       #tags$img(src=list$Zdjecie, width= "90%"),
+                                                                       h1(list$Sklep),
+                                                                       br(),
+                                                                       p(paste0(list$Cena, " zł"), class = "text_price"),
+                                                                       tags$a(href=list$URL,
+                                                                              actionButton(paste("shop_", list$NR), "Przejdź do sklepu", class = "shops"),
+                                                                              target="_blank"))
+                                                 })))})
     
     observeEvent(input$rtmodels,{
       newtab <- switch(input$tabs,
