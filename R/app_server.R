@@ -74,7 +74,8 @@ app_server <- function( input, output, session ) {
       mainPanel(div(
         div(id="box-modelplot",
             " Porównanie zużycia energii ",
-            plotOutput("modelplot", height = "700px")),
+            plotOutput("modelplot", height = "660px"),
+            actionButton("rtmain", "Zobacz inne urządzenia")),
         div(id="box-rightsidebar",
             "Parametry",
             uiOutput("image"),
@@ -83,6 +84,12 @@ app_server <- function( input, output, session ) {
         width=9)
       ))
   
+    observeEvent(input$rtmain,{
+      newtab <- switch(input$tabs,
+                       "models" = "main",
+                       "main" = "models")
+      shinydashboard::updateTabItems(session, "tabs", newtab)
+    })
   
     observe({
       lapply(best_models()$input_ID, function(input_id){
@@ -178,11 +185,26 @@ app_server <- function( input, output, session ) {
         })
       })
     })
-  
+   
     output$box_offers <- renderUI(
-      div(fluidRow(column(12, align = "center", h1("Najlepsze oferty"))),
-      fluidRow(column(12, align = "center", actionButton("rtmodels", "Zobacz inne modele"))))
+      div(fluidRow(column(12, align = "center", h1("Najlepsze oferty dla:"))),
+          fluidRow(column(12, align = "center", h1(best_models()[best_models()$ID == urzadzenie_id(),'Nazwa']))),
+          br(),
+          uiOutput("id_offers"),
+          br(),
+          fluidRow(column(12, align = "center", actionButton("rtmodels", "Zobacz inne modele"))))
     )
+    
+    urzadzenie_id <- reactiveVal(NA)
+    
+    observe({
+      lapply(best_models()$input_ID, function(input_id){
+        observeEvent(input[[input_id]], {
+                      id <- stringr::str_extract(input_id, "\\d+")
+                      urzadzenie_id(id)
+    })})})
+    
+    output$id_offers <- renderUI(fluidRow(get_offers(urzadzenie_id(), urzadzenie())))
     
     observeEvent(input$rtmodels,{
       newtab <- switch(input$tabs,

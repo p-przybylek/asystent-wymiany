@@ -301,15 +301,29 @@ get_new_tv_con <- function(stand_con, on_con, monthly_con){
 #' @param type_of_device `string` that determines the type of device.
 #' For now, only 'fridges' or 'tvs' would be accepted 
 #' 
-#' @return A data.frame with 3 columns: Cena, Sklep, URL
+#' @return divs with offers for one model
 #'
 #' @export
 #' @import rlang
+#' @import purrr
+#' @import shinydashboard
 #' 
 get_offers <- function(id, type_of_device){
   if(!type_of_device %in% c("fridges","tvs"))rlang::abort(paste0('Type of device not found.'))
-  all_offers <- get(utils::data(list = paste0(type_of_device, '_offers'), package = 'asystentWymiany', envir = rlang::current_env()))
-  all_offers[all_offers$ID == id,c("Cena","Sklep","URL")]
-  # generowanie przyciskow? 
+  all_offers <- base::get(utils::data(list = paste0(type_of_device, '_offers'), package = 'asystentWymiany', envir = rlang::current_env()))
+  all_offers <- all_offers[all_offers$ID == id, c("Cena","Sklep","URL")]
+  all_offers <- cbind(all_offers, NR = c(1:dim(all_offers)[1])) %>% purrr::transpose()
+  lapply(all_offers, function(list, i){
+    
+    shinydashboard::box(width = 12/length(all_offers), 
+                        class = "box", 
+                        #tags$img(src=shop_img, width= "90%"),
+                        h1(list$Sklep),
+                        br(),
+                        p(paste0(list$Cena, " zł"), class = "text_price"),
+                        tags$a(href=list$URL,
+                               actionButton(paste("shop_", list$NR), "Przejdź do sklepu", class = "shops"),
+                               target="_blank"))
+  })
 }
 
