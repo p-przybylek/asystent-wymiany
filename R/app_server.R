@@ -49,7 +49,7 @@ app_server <- function( input, output, session ) {
   output$box_models <- renderUI(
     sidebarLayout(
       sidebarPanel(
-        h1("LODÓWKI", align="center"),
+        h1(ifelse(urzadzenie() == "fridges","LODÓWKI", "TELEWIZORY"), align="center"),
         fluidRow(selectInput("sorting", NULL, choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany"))),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                             "Nie ma takich modeli!",
