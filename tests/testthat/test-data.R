@@ -9,7 +9,7 @@ test_that('sprawdz_poprawnosc_lodowek wykryje bledne dane',{
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,2] <- "Bez Lodowka na poczatku"
+  bledne_dane[1,2] <- "Bez 'Lodowka' na poczatku"
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane

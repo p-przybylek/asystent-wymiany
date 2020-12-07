@@ -40,7 +40,7 @@ app_server <- function( input, output, session ) {
   
   tv_con <- reactive({
     if(!is.na(urzadzenie()) & urzadzenie() == "tvs")
-      get_tv_con()
+      get_tv_con() # to laduje sie ok. 8 sekund, za kazdym razem, gdy urzytkownik wejdzie w TV
     else
       NA
   })
@@ -99,50 +99,46 @@ app_server <- function( input, output, session ) {
       lapply(best_models()$input_ID, function(input_id){
         observeEvent(input[[input_id]], {
                      output$modelplot <- {
-                       out <- NA
-                       if(urzadzenie() == "fridges")
-                         out <- yearly_forecast_plot(cur_m_power = cur_m_power,
-                                                     new_m_power = best_models()[best_models()$input_ID == input_id,
-                                                                                'Roczne_zuzycie_pradu_kWh'], # Pobor_mocy_tryb_czuwania_W Pobor_mocy_tryb_wlaczenia_W
-                                                     new_m_price = best_models()[best_models()$input_ID == input_id,
-                                                                                'Cena'],
-                                                     el_cost = el_cost,
-                                                     cur_month_power = cur_month_power)
-                       if(urzadzenie() == "tvs"){
-                         X <- tv_con()
-                       
-                         X$new <- get_new_tv_con(best_models()[best_models()$input_ID == input_id,
-                                                                "Pobor_mocy_tryb_czuwania_W"],
-                                                  best_models()[best_models()$input_ID == input_id,
-                                                                "Pobor_mocy_tryb_wlaczenia_W"],
-                                                  X)
-                         names(X)[3] <- "old" # kWh -> old
-                          
-                         out <- monthly_savings_plot(monthly_con = X[,c("Month", "old", "new")],
-                                                     el_cost = el_cost,
-                                                     years_to_go = best_models()[best_models()$input_ID == input_id,
-                                                                                 "years_to_go"],
-                                                     new_m_price = best_models()[best_models()$input_ID == input_id,
-                                                                                 "Cena"])
-                       }
-                       
-                       renderPlot(out)
+                       renderPlot(
+                         switch (urzadzenie(),
+                           "fridges" = yearly_forecast_plot(cur_m_power = cur_m_power,
+                                                            new_m_power = best_models()[best_models()$input_ID == input_id,
+                                                                                        'Roczne_zuzycie_pradu_kWh'], # Pobor_mocy_tryb_czuwania_W Pobor_mocy_tryb_wlaczenia_W
+                                                            new_m_price = best_models()[best_models()$input_ID == input_id,
+                                                                                        'Cena'],
+                                                            el_cost = el_cost,
+                                                            cur_month_power = cur_month_power),
+                           "tvs" = {
+                             X <- tv_con()
+                             
+                             X$new <- get_new_tv_con(best_models()[best_models()$input_ID == input_id,
+                                                                   "Pobor_mocy_tryb_czuwania_W"],
+                                                     best_models()[best_models()$input_ID == input_id,
+                                                                   "Pobor_mocy_tryb_wlaczenia_W"],
+                                                     X)
+                             names(X)[3] <- "old" # kWh -> old
+                             
+                             monthly_savings_plot(monthly_con = X[,c("Month", "old", "new")],
+                                                  el_cost = el_cost,
+                                                  years_to_go = best_models()[best_models()$input_ID == input_id,
+                                                                              "years_to_go"],
+                                                  new_m_price = best_models()[best_models()$input_ID == input_id,
+                                                                              "Cena"])
+                           }
+                         )
+                       )
                      }
                      output$image <- {
                        renderUI({
-                         img <- NA
-                         if(urzadzenie() == "fridges")
-                           img <- fridges[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]
-                         if(urzadzenie() == "tvs")
-                           img <- tvs[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]
-                         tags$img(src=img, width= "90%")
+                         tags$img(src = switch(urzadzenie(),
+                                               "fridges" = fridges[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"],
+                                               "tvs" = tvs[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]),
+                                  width= "90%")
                        })}
                      output$parameters <- {
-                       param_table <- NA
-                       if(urzadzenie() == "fridges")
-                         param_table <- data.frame(t(fridges[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))]))
-                       if(urzadzenie() == "tvs")
-                         param_table <- data.frame(t(tvs[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))]))
+                       param_table <- switch(urzadzenie(),
+                                             "fridges" = data.frame(t(fridges[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))])),
+                                             "tvs" = data.frame(t(tvs[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))])))
                          
                        rownames(param_table) <- lapply(rownames(param_table), function(rowname){
                          stringi::stri_replace_all_fixed(rowname, "_", " ")
@@ -176,7 +172,7 @@ app_server <- function( input, output, session ) {
       filtering()
       
       isolate({
-        if(is.null(input[["filters"]])){ # niema jeszcze filterow - dopiero weszlismy do panelu 2
+        if(is.null(input[["filters"]])){ # niema jeszcze filtrow - dopiero weszlismy do panelu 2
           return(NA)
       }
       

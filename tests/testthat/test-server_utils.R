@@ -67,3 +67,24 @@ test_that("No error caused by get_fridge_con", {
   expect_setequal(length(get_new_tv_con(0.5, 100, get_tv_con())), 12)
 })
 
+
+tv_con <- get_tv_con()
+test_that("get_best_models zwroci NA na poczatku dzialania aplikacji", {
+  expect_null(get_best_models(NA, 60, 0.617, tv_con))
+})
+
+test_that("get_best_models poprawnie obudowuje get_best_((fridges)|(tvs))", {
+  expect_true(dplyr::all_equal(get_best_models("fridges", 1200, 0.617),
+                               get_best_fridges(1200, 0.617)))
+  expect_true(dplyr::all_equal(get_best_models("tvs", 60, 0.617, tv_con),
+                               get_best_tvs(60, 0.617, tv_con)))
+})
+
+
+
+
+
+
+
+
+

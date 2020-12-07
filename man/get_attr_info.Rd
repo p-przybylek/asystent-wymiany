@@ -8,7 +8,7 @@ get_attr_info(dataset)
 }
 \arguments{
 \item{dataset}{A single `string`, equal to one of the names of datasets. 
-For now, only 'fridges' would be accepted OR
+Only 'fridges' and 'tvs' would be accepted OR
 A `data.frame`, following format desribed in Details.}
 }
 \value{

@@ -83,7 +83,7 @@ get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
 #' Get info about attributes
 #' 
 #' @param dataset A single `string`, equal to one of the names of datasets. 
-#' For now, only 'fridges' would be accepted OR
+#' Only 'fridges' and 'tvs' would be accepted OR
 #' A `data.frame`, following format desribed in Details.
 #' 
 #' @details It is assumed, that each dataset is 
@@ -301,7 +301,7 @@ get_new_tv_con <- function(stand_con, on_con, monthly_con){
 #' @param type_of_device `string` that determines the type of device.
 #' For now, only 'fridges' or 'tvs' would be accepted 
 #' 
-#' @return dataframe with four column: Cena, Sklep, URL, NR
+#' @return `list`` with four elements, every of which contains: Cena, Sklep, URL, NR
 #'
 #' @export
 #' @import rlang
