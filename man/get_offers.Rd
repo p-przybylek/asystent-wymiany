@@ -13,7 +13,7 @@ get_offers(id, type_of_device)
 For now, only 'fridges' or 'tvs' would be accepted}
 }
 \value{
-dataframe with four column: Cena, Sklep, URL, NR
+`list`` with four elements, every of which contains: Cena, Sklep, URL, NR
 }
 \description{
 Get offers for a given model and type of device

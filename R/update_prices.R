@@ -14,7 +14,7 @@ update_prices <- function(type_of_device){
   devices_offers <- base::get(utils::data(list = paste0(type_of_device, '_offers'), package = 'asystentWymiany', envir = rlang::current_env()))
   devices <- base::get(utils::data(list = type_of_device, package = 'asystentWymiany', envir = rlang::current_env()))
   
-  minCena <- devices_offers %>% group_by(ID) %>% summarise(minCena = min(Cena))
+  minCena <- summarise(group_by(devices_offers, ID), minCena = min(Cena))
   devices <- left_join(devices,minCena,by="ID")
   devices[,"Cena"] <- devices[,"minCena"]
   devices <- subset(devices,select= -minCena)

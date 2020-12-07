@@ -170,9 +170,10 @@ app_server <- function( input, output, session ) {
     
     filters <- reactive({
       filtering()
+      urzadzenie()
       
       isolate({
-        if(is.null(input[["filters"]])){ # niema jeszcze filtrow - dopiero weszlismy do panelu 2
+        if(is.null(input[["filters"]]) || input[["filters"]] == 0){ # niema jeszcze przycisku do filtrowania, lub nigdy nie zostal klikniety - dopiero weszlismy do panelu 2
           return(NA)
       }
       

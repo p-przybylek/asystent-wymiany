@@ -305,6 +305,7 @@ get_new_tv_con <- function(stand_con, on_con, monthly_con){
 #'
 #' @export
 #' @import rlang
+#' @import magrittr
 #' @import purrr
 #' @import shinydashboard
 #' 
