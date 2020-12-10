@@ -2,7 +2,7 @@
 % Please edit documentation in R/server_utils.R
 \name{get_best_fridges}
 \alias{get_best_fridges}
-\title{Get best fridges}
+\title{Najlepsze lodowki}
 \usage{
 get_best_fridges(cur_m_power, el_cost, top_n = 5, filters = NA, criterion)
 }
@@ -22,8 +22,8 @@ prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od 
 }
 \value{
 `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh, criterion
-z informacjami o najlepszych lodowkach wg parametru `criterion`
+z informacjami o najlepszych lodowkach wg parametru `criterion`.
 }
 \description{
-Get best fridges
+Znajdz najlepsze lodowki wedlug `criterion`.
 }

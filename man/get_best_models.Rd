@@ -2,7 +2,7 @@
 % Please edit documentation in R/server_utils.R
 \name{get_best_models}
 \alias{get_best_models}
-\title{Get best models}
+\title{Najlepsze urzadzenia}
 \usage{
 get_best_models(
   urzadzenie,
@@ -34,5 +34,5 @@ prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od 
 Patrz `get_best_fridges` oraz `get_best_tvs`
 }
 \description{
-Get best models
+Znajdz i zwroc najlepsze urzadzenia w zaleznosci od parametru `criterion`.
 }

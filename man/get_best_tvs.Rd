@@ -2,7 +2,7 @@
 % Please edit documentation in R/server_utils.R
 \name{get_best_tvs}
 \alias{get_best_tvs}
-\title{Get best TV}
+\title{Najlepsze telewizory}
 \usage{
 get_best_tvs(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, criterion)
 }
@@ -22,8 +22,8 @@ prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od 
 }
 \value{
 `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh,Pobor_mocy_tryb_czuwania_W, Pobor_mocy_tryb_wlaczenia_W, years_to_go, criterion
-z informacjami o najlepszych telewizorach wg parametru `criterion`
+z informacjami o najlepszych telewizorach wg parametru `criterion`.
 }
 \description{
-Get best TV
+Znajdz najlepsze telewizory wedlug `criterion`.
 }

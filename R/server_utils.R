@@ -1,4 +1,6 @@
-#' Get best models
+#' Najlepsze urzadzenia
+#' 
+#' Znajdz i zwroc najlepsze urzadzenia w zaleznosci od parametru `criterion`.
 #' 
 #' @inheritParams yearly_forecast_plot
 #' @param urzadzenie typ urzadzenia do wyswietlenia
@@ -39,12 +41,14 @@ get_best_models <- function(urzadzenie,
 }
 
 
-#' Get best fridges
+#' Najlepsze lodowki
+#' 
+#' Znajdz najlepsze lodowki wedlug `criterion`.
 #' 
 #' @inheritParams get_best_models
 #' 
 #' @return `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh, criterion
-#' z informacjami o najlepszych lodowkach wg parametru `criterion`
+#' z informacjami o najlepszych lodowkach wg parametru `criterion`.
 #' @export
 #' 
 get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, criterion){
@@ -75,12 +79,14 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
   fridges[head(order(fridges[['criterion']]), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
 }
 
-#' Get best TV
+#' Najlepsze telewizory
+#' 
+#' Znajdz najlepsze telewizory wedlug `criterion`.
 #' 
 #' @inheritParams get_best_models
 #' 
 #' @return `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh,Pobor_mocy_tryb_czuwania_W, Pobor_mocy_tryb_wlaczenia_W, years_to_go, criterion
-#' z informacjami o najlepszych telewizorach wg parametru `criterion`
+#' z informacjami o najlepszych telewizorach wg parametru `criterion`.
 #' @export
 #' 
 get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, criterion){
