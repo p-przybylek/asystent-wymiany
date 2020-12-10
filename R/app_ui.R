@@ -57,7 +57,7 @@ golem_add_external_resources <- function(){
       path = app_sys('app/www'),
       app_title = 'asystentWymiany'
     ),
-    shinyjs::useShinyjs(),      # do reagowania na eventy itp
+    shinyjs::useShinyjs(),       # do reagowania na eventy itp
     shinyalert::useShinyalert() # do wyswietlania bledow itp
   )
 }

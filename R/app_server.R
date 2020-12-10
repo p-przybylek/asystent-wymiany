@@ -86,9 +86,9 @@ app_server <- function( input, output, session ) {
   
     observe({
       if(is.na(urzadzenie_id())){
-        output$modelplot <- renderPlot({}) #TODO (Napis "Wybierz model")
+        output$modelplot <- renderUI({}) #TODO (Napis "Wybierz model")
         output$image <- renderUI({})
-        output$parameters <- renderTable({})
+        output$parameters <- renderUI({})
       }
     })
     
@@ -124,6 +124,7 @@ app_server <- function( input, output, session ) {
                                                      best_models()[best_models()$input_ID == input_id,
                                                                    "Pobor_mocy_tryb_wlaczenia_W"],
                                                      X)
+                             
                              names(X)[3] <- "old" # kWh -> old
                              
                              monthly_savings_plot(monthly_con = X[,c("Month", "old", "new")],
