@@ -74,16 +74,24 @@ app_server <- function( input, output, session ) {
       mainPanel(div(
         div(id="box-modelplot",
             " Porównanie zużycia energii ",
-            plotOutput("modelplot", height = "660px"),
+            shinycssloaders::withSpinner(plotOutput("modelplot", height = "660px"), color = "#ffc34d"),
             actionButton("rtmain", "Zobacz inne urządzenia")),
         div(id="box-rightsidebar",
             "Parametry",
-            uiOutput("image"),
-            tableOutput("parameters"),
+            shinycssloaders::withSpinner(uiOutput("image"), color = "#ff8000"),
+            shinycssloaders::withSpinner(tableOutput("parameters"), color = "#ff8000"),
             uiOutput("buy"))),
         width=9)
       ))
   
+    observe({
+      if(is.na(urzadzenie_id())){
+        output$modelplot <- renderPlot({}) #TODO (Napis "Wybierz model")
+        output$image <- renderUI({})
+        output$parameters <- renderTable({})
+      }
+    })
+    
     observeEvent(input$rtmain,{
       newtab <- switch(input$tabs,
                        "models" = "main",
@@ -173,9 +181,9 @@ app_server <- function( input, output, session ) {
       urzadzenie()
       
       isolate({
-        if(is.null(input[["filters"]]) || input[["filters"]] == 0){ # niema jeszcze przycisku do filtrowania, lub nigdy nie zostal klikniety - dopiero weszlismy do panelu 2
+        if(input[["filters"]] == 0 || is.null(input[["filters"]])) # niema jeszcze przycisku do filtrowania, lub nigdy nie zostal klikniety - dopiero weszlismy do panelu 2
           return(NA)
-      }
+        
       
       output$modelplot <- renderUI({})
       output$image <- renderUI({})
