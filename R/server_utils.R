@@ -77,12 +77,10 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
 
 #' Get best TV
 #' 
-#' @inheritParams yearly_forecast_plot
-#' @param top_n liczba najleprzych modeli do pokazania
-#' @param filters filtry do zaaplikowania (być może NA)
+#' @inheritParams get_best_models
 #' 
-#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-#' with info about most cost-efficient top_n fridges 
+#' @return `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh,Pobor_mocy_tryb_czuwania_W, Pobor_mocy_tryb_wlaczenia_W, years_to_go, criterion
+#' z informacjami o najlepszych telewizorach wg parametru `criterion`
 #' @export
 #' 
 get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, criterion){
@@ -95,16 +93,27 @@ get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, 
                            confirmButtonCol = "#66cdaa")
   tvs <- filter_by_attr(filters = filters, dataset = tvs)
   if(nrow(tvs) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
-  
+  tvs$Pobor_mocy_est <- sapply(1:nrow(tvs), function(i)
+    sum(get_new_tv_con(tvs[i,"Pobor_mocy_tryb_czuwania_W"],
+                       tvs[i,"Pobor_mocy_tryb_wlaczenia_W"],
+                       tv_con))
+  )
+  # Istotne dla `prize`, w pozostałych nie robi różnicy
+  tvs <- tvs[tvs$Pobor_mocy_est < cur_m_power,]
+  if(nrow(tvs) == 0) return(NULL)
   tvs$years_to_go <- sapply(1:nrow(tvs), function(i){
     get_years_to_go(cur_m_power,
-                    new_m_power = sum(get_new_tv_con(tvs[i,"Pobor_mocy_tryb_czuwania_W"],
-                                                     tvs[i,"Pobor_mocy_tryb_wlaczenia_W"],
-                                                     tv_con)),
+                    new_m_power = tvs[i,'Pobor_mocy_est'],
                     new_m_price = tvs[i,'Cena'],
                     el_cost)
   })
-  tvs[head(order(tvs$years_to_go), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go")]
+  criterion_column <- switch (criterion,
+                              'years_to_go' = 'years_to_go',
+                              'prize' = 'Cena',
+                              'power_efficiency' = 'Pobor_mocy_est'
+  )
+  tvs$criterion <- tvs[[criterion_column]]
+  tvs[head(order(tvs[['criterion']]), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
 }
 
 #' Get info about attributes
