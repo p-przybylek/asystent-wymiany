@@ -161,3 +161,13 @@
   z-index: 1000;
   text-align: center;
 }
+
+.filters {
+  overflow-y: scroll; 
+  max-height: 80vh; 
+  margin-bottom: 0px;
+}
+
+.modal-body {
+  text-align: center;
+}
