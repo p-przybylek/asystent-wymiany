@@ -2,7 +2,7 @@
 % Please edit documentation in R/server_utils.R
 \name{get_best_models}
 \alias{get_best_models}
-\title{Get best models}
+\title{Najlepsze urzadzenia}
 \usage{
 get_best_models(
   urzadzenie,
@@ -10,7 +10,8 @@ get_best_models(
   el_cost,
   tv_con,
   top_n = 5,
-  filters = NA
+  filters = NA,
+  criterion = "years_to_go"
 )
 }
 \arguments{
@@ -23,11 +24,15 @@ get_best_models(
 \item{top_n}{liczba najleprzych modeli do pokazania}
 
 \item{filters}{filtry do zaaplikowania (być może NA)}
+
+\item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
+years_to_go - ile czasu czekamy do zwrotu inwestycji
+power_efficiency - co zuzyje najmniej pradu wg prognozy
+prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
 }
 \value{
-A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-with info about most cost-efficient top_n fridges
+Patrz `get_best_fridges` oraz `get_best_tvs`
 }
 \description{
-Get best models
+Znajdz i zwroc najlepsze urzadzenia w zaleznosci od parametru `criterion`.
 }

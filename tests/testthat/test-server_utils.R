@@ -4,11 +4,11 @@ new_m_power <- 170 # kWh/rok
 new_m_price <- 1200 # PLN
 el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
 test_that('No errors on get_best_fridges',{
-  expect_s3_class(get_best_fridges(cur_m_power, el_cost),'data.frame')
-  expect_setequal(colnames(get_best_fridges(cur_m_power, el_cost)), c('ID', 'Nazwa', 'Cena', 'Roczne_zuzycie_pradu_kWh'))
+  expect_s3_class(get_best_fridges(cur_m_power, el_cost, criterion = 'years_to_go'),'data.frame')
+  expect_setequal(colnames(get_best_fridges(cur_m_power, el_cost, criterion = 'years_to_go')), c('ID', 'Nazwa', 'Cena', 'Roczne_zuzycie_pradu_kWh', 'criterion'))
 })
 test_that('top_n works',{
-  expect_lte(nrow(get_best_fridges(cur_m_power, el_cost, top_n = 10)),
+  expect_lte(nrow(get_best_fridges(cur_m_power, el_cost, top_n = 10, criterion = 'years_to_go')),
                   10)
 })
 
@@ -75,13 +75,54 @@ test_that("get_best_models zwroci NA na poczatku dzialania aplikacji", {
 
 test_that("get_best_models poprawnie obudowuje get_best_((fridges)|(tvs))", {
   expect_true(dplyr::all_equal(get_best_models("fridges", 1200, 0.617),
-                               get_best_fridges(1200, 0.617)))
+                               get_best_fridges(1200, 0.617, criterion = 'years_to_go')))
   expect_true(dplyr::all_equal(get_best_models("tvs", 60, 0.617, tv_con),
-                               get_best_tvs(60, 0.617, tv_con)))
+                               get_best_tvs(60, 0.617, tv_con, criterion = 'years_to_go')))
 })
 
+#----- get_best_models z parametrem criterion -----
+test_that('Error dla niepoprawnego criterion',{
+  expect_error(get_best_models('fridges', 1200, 0.617, criterion = TRUE))
+  expect_error(get_best_models('fridges', 1200, 0.617, criterion = c('prize', 'power_efficiency')))
+  expect_error(get_best_models('fridges', 1200, 0.617, criterion = 'TRUE'))
+})
 
+test_that('get_best_models z poprawnym parametrem criterion nie zwraca błędu',{
+  expect_silent(fridges_by_power <- get_best_models('fridges', 1200, 0.617, criterion = 'power_efficiency'))
+  expect_silent(get_best_models('fridges', 1200, 0.617, criterion = 'prize'))
+  expect_silent(get_best_models('fridges', 1200, 0.617, criterion = 'years_to_go'))
+  expect_silent(get_best_models('tvs', 60, 0.617, tv_con, criterion = 'power_efficiency'))
+  expect_silent(get_best_models('tvs', 60, 0.617, tv_con, criterion = 'prize'))
+  expect_silent(get_best_models('tvs', 60, 0.617, tv_con, criterion = 'years_to_go'))
+})
 
+fridges_by_power <- get_best_models('fridges', 1200, 0.617, criterion = 'power_efficiency')
+fridges_by_prize <- get_best_models('fridges', 1200, 0.617, criterion = 'prize')
+fridges_by_years <- get_best_models('fridges', 1200, 0.617, criterion = 'years_to_go')
+expected_fridges_colnames <- c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')
+
+test_that('get_best_models działa poprawnie z parametrem criterion dla lodowek',{
+  expect_s3_class(fridges_by_power, 'data.frame')
+  expect_setequal(colnames(fridges_by_power), expected_fridges_colnames)
+  expect_s3_class(fridges_by_prize, 'data.frame')
+  expect_setequal(colnames(fridges_by_prize), expected_fridges_colnames)
+  expect_s3_class(fridges_by_years, 'data.frame')
+  expect_setequal(colnames(fridges_by_years), expected_fridges_colnames)
+})
+
+tvs_by_power <- get_best_models('tvs', 60, 0.617, tv_con, criterion = 'power_efficiency')
+tvs_by_prize <- get_best_models('tvs', 60, 0.617, tv_con, criterion = 'prize')
+tvs_by_years <- get_best_models('tvs', 60, 0.617, tv_con, criterion = 'years_to_go')
+expected_tvs_colnames <- c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')
+
+test_that('get_best_models działa poprawnie z parametrem criterion dla telewizorow',{
+  expect_s3_class(tvs_by_power, 'data.frame')
+  expect_setequal(colnames(tvs_by_power), expected_tvs_colnames)
+  expect_s3_class(tvs_by_prize, 'data.frame')
+  expect_setequal(colnames(tvs_by_prize), expected_tvs_colnames)
+  expect_s3_class(tvs_by_years, 'data.frame')
+  expect_setequal(colnames(tvs_by_years), expected_tvs_colnames)
+})
 
 
 

@@ -1,35 +1,57 @@
-#' Get best models
+#' Najlepsze urzadzenia
+#' 
+#' Znajdz i zwroc najlepsze urzadzenia w zaleznosci od parametru `criterion`.
 #' 
 #' @inheritParams yearly_forecast_plot
 #' @param urzadzenie typ urzadzenia do wyswietlenia
 #' @param top_n liczba najleprzych modeli do pokazania
 #' @param filters filtry do zaaplikowania (być może NA)
+#' @param criterion String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
+#' years_to_go - ile czasu czekamy do zwrotu inwestycji
+#' power_efficiency - co zuzyje najmniej pradu wg prognozy
+#' prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego
 #' 
-#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-#' with info about most cost-efficient top_n fridges 
+#' @return Patrz `get_best_fridges` oraz `get_best_tvs`
 #' @export
 #' 
-get_best_models <- function(urzadzenie, cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
+get_best_models <- function(urzadzenie, 
+                            cur_m_power, 
+                            el_cost, 
+                            tv_con, 
+                            top_n = 5, 
+                            filters = NA,
+                            criterion = "years_to_go"){
   if(is.na(urzadzenie)) # aplikacja dopiero sie odpala
     return(NULL)
-  
+  allowed_appliances <- c('fridges', 'tvs')
+  if(!is.character(urzadzenie) || 
+     length(urzadzenie) > 1 || 
+     !urzadzenie %in% allowed_appliances){
+    rlang::abort(paste0('`urzadzenie` must one of: ', stringr::str_flatten(allowed_appliances, collapse = ', ')))
+  }
+  allowed_criterions <- c("power_efficiency", "prize", "years_to_go")
+  if(!is.character(criterion) || 
+     length(criterion) > 1 || 
+     !criterion %in% allowed_criterions){
+    rlang::abort(paste0('`criterion` must one of: ', stringr::str_flatten(allowed_criterions, collapse = ', ')))
+  }
   return(switch(urzadzenie, # odpala odpowiednia funkcje dla danego urzadzenia
-                "fridges" = get_best_fridges(cur_m_power, el_cost, top_n, filters),
-                "tvs"     = get_best_tvs    (cur_m_power, el_cost, tv_con, top_n, filters)))
+                "fridges" = get_best_fridges(cur_m_power, el_cost, top_n, filters, criterion),
+                "tvs"     = get_best_tvs    (cur_m_power, el_cost, tv_con, top_n, filters, criterion)))
 }
 
 
-#' Get best fridges
+#' Najlepsze lodowki
 #' 
-#' @inheritParams yearly_forecast_plot
-#' @param top_n liczba najleprzych modeli do pokazania
-#' @param filters filtry do zaaplikowania (być może NA)
+#' Znajdz najlepsze lodowki wedlug `criterion`.
 #' 
-#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-#' with info about most cost-efficient top_n fridges 
+#' @inheritParams get_best_models
+#' 
+#' @return `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh, criterion
+#' z informacjami o najlepszych lodowkach wg parametru `criterion`.
 #' @export
 #' 
-get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA){
+get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, criterion){
   utils::data('fridges', package = 'asystentWymiany', envir = rlang::current_env())
   if(!sprawdz_poprawnosc_lodowek(fridges))
     shinyalert::shinyalert("",
@@ -38,6 +60,8 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA){
                            confirmButtonText = "OK",
                            confirmButtonCol = "#66cdaa")
   fridges <- filter_by_attr(filters = filters, dataset = fridges)
+  # Istotne dla `prize`, w pozostałych nie robi różnicy
+  fridges <- fridges[fridges$Roczne_zuzycie_pradu_kWh < cur_m_power,]
   if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
   fridges$years_to_go <- sapply(1:nrow(fridges), function(i){
     get_years_to_go(cur_m_power, 
@@ -45,20 +69,27 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA){
                     new_m_price = fridges[i,'Cena'],
                     el_cost)
   })
-  fridges[head(order(fridges$years_to_go), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh")]
+  criterion_column <- switch (criterion,
+    'years_to_go' = 'years_to_go',
+    'prize' = 'Cena',
+    'power_efficiency' = 'Roczne_zuzycie_pradu_kWh'
+  )
+  # Każde kryterium im mniejsze, tym lepsze
+  fridges$criterion <- fridges[[criterion_column]]
+  fridges[head(order(fridges[['criterion']]), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
 }
 
-#' Get best TV
+#' Najlepsze telewizory
 #' 
-#' @inheritParams yearly_forecast_plot
-#' @param top_n liczba najleprzych modeli do pokazania
-#' @param filters filtry do zaaplikowania (być może NA)
+#' Znajdz najlepsze telewizory wedlug `criterion`.
 #' 
-#' @return A data.frame with 4 columns: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh
-#' with info about most cost-efficient top_n fridges 
+#' @inheritParams get_best_models
+#' 
+#' @return `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh,Pobor_mocy_tryb_czuwania_W, Pobor_mocy_tryb_wlaczenia_W, years_to_go, criterion
+#' z informacjami o najlepszych telewizorach wg parametru `criterion`.
 #' @export
 #' 
-get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
+get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, criterion){
   utils::data('tvs', package = 'asystentWymiany', envir = rlang::current_env())
   if(!sprawdz_poprawnosc_tv(tvs))
     shinyalert::shinyalert("",
@@ -68,16 +99,27 @@ get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA){
                            confirmButtonCol = "#66cdaa")
   tvs <- filter_by_attr(filters = filters, dataset = tvs)
   if(nrow(tvs) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
-  
+  tvs$Pobor_mocy_est <- sapply(1:nrow(tvs), function(i)
+    sum(get_new_tv_con(tvs[i,"Pobor_mocy_tryb_czuwania_W"],
+                       tvs[i,"Pobor_mocy_tryb_wlaczenia_W"],
+                       tv_con))
+  )
+  # Istotne dla `prize`, w pozostałych nie robi różnicy
+  tvs <- tvs[tvs$Pobor_mocy_est < cur_m_power,]
+  if(nrow(tvs) == 0) return(NULL)
   tvs$years_to_go <- sapply(1:nrow(tvs), function(i){
     get_years_to_go(cur_m_power,
-                    new_m_power = sum(get_new_tv_con(tvs[i,"Pobor_mocy_tryb_czuwania_W"],
-                                                     tvs[i,"Pobor_mocy_tryb_wlaczenia_W"],
-                                                     tv_con)),
+                    new_m_power = tvs[i,'Pobor_mocy_est'],
                     new_m_price = tvs[i,'Cena'],
                     el_cost)
   })
-  tvs[head(order(tvs$years_to_go), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go")]
+  criterion_column <- switch (criterion,
+                              'years_to_go' = 'years_to_go',
+                              'prize' = 'Cena',
+                              'power_efficiency' = 'Pobor_mocy_est'
+  )
+  tvs$criterion <- tvs[[criterion_column]]
+  tvs[head(order(tvs[['criterion']]), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
 }
 
 #' Get info about attributes

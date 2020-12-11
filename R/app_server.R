@@ -50,7 +50,8 @@ app_server <- function( input, output, session ) {
     sidebarLayout(
       sidebarPanel(
         h1(ifelse(urzadzenie() == "fridges","LODÓWKI", "TELEWIZORY"), align="center"),
-        fluidRow(selectInput("sorting", NULL, choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany"))),
+        fluidRow(selectInput("sorting", NULL, 
+                             choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany"))),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                             "Nie ma takich modeli!",
                                                             type = "error",
