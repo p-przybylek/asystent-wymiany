@@ -69,6 +69,8 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
                     new_m_price = fridges[i,'Cena'],
                     el_cost)
   })
+  fridges <- fridges[fridges$years_to_go < 100, ] # liczba lat do zwrotu mniejsza niz 100
+  if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
   criterion_column <- switch (criterion,
     'years_to_go' = 'years_to_go',
     'prize' = 'Cena',

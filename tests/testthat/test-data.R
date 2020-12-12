@@ -5,75 +5,71 @@ test_that('sprawdz_poprawnosc_lodowek wykryje bledne dane',{
   poprawne_dane <- fridges
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,1] <- 0
+  bledne_dane$ID[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,2] <- "Bez 'Lodowka' na poczatku"
+  bledne_dane$Nazwa[1] <- "Bez 'Lodowka' na poczatku"
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,3] <- 0
+  bledne_dane$Cena[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,4] <- 0
+  bledne_dane$Roczne_zuzycie_pradu_kWh[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,5] <- 0
+  bledne_dane$Prognozowane_koszty_roczne_PLN[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,6] <- 0
+  bledne_dane$Srednia_moc_W[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,7] <- NA
+  bledne_dane$Zdj <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,8] <- NA
+  bledne_dane$Firma <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,9] <- -1
+  bledne_dane$Wysokosc_cm[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,10] <- -1
+  bledne_dane$Szerokosc_cm[1] <- -1
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,11] <- -1
+  bledne_dane$Glebokosc_cm <- FALSE
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,12] <- 0
+  bledne_dane$Pojemnosc_uzytkowa_zamrazarki_l[1] <- -12
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,13] <- -1
+  bledne_dane$Bezszronowa_No_Frost[1] <- "TRUE"
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,14] <- "FALSE"
+  bledne_dane$Sterowanie_smartfonem[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,15] <- "FALSE"
+  bledne_dane$Zmiana_kierunku_otwierania_drzwi <- NA
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
-  bledne_dane[1,16] <- "TRUE"
+  bledne_dane$Poziom_halasu_dB[1] <- 0
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
-  bledne_dane <- poprawne_dane
-  bledne_dane[1,17] <- 0
-  expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
-  
-  bledne_dane <- poprawne_dane
-  bledne_dane[1,18] <- NA
+  bledne_dane <- poprawne_dane 
+  bledne_dane$Kolor <- TRUE
   expect_false(sprawdz_poprawnosc_lodowek(bledne_dane))
   
   bledne_dane <- poprawne_dane
@@ -93,92 +89,92 @@ ddpcr::quiet(
     poprawne_dane <- tvs
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,1] <- NA
+    bledne_dane$ID[1] <- NA
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,1] <- 0
+    bledne_dane$ID[1] <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[2,2] <- "Bez 'Telewizor' na poczatku"
+    bledne_dane$Nazwa[2] <- "Bez 'Telewizor' na poczatku"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,3] <- 0
+    bledne_dane$Cena[1] <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,4] <- 0
+    bledne_dane$Pobor_mocy_tryb_czuwania_W[1] <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,5] <- 0
+    bledne_dane$Pobor_mocy_tryb_wlaczenia_W[1] <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,4] <- 10
-    bledne_dane[1,5] <- 5
+    bledne_dane$Pobor_mocy_tryb_czuwania_W[1] <- 10
+    bledne_dane$Pobor_mocy_tryb_wlaczenia_W[1] <- 5
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,6] <- rep(0, length(bledne_dane[,6]))
+    bledne_dane$Szerokosc_ekranu_px <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,7] <- NA
+    bledne_dane$Wysokosc_ekranu_px[1] <- 0
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,8] <- 0
+    bledne_dane$Dla_graczy <- "True"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,9] <- rep(0, length(bledne_dane[,9]))
+    bledne_dane$Czestotliwosc_odswiezania_ekranu_Hz[1] <- "True"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,10] <- -1
+    bledne_dane$Zdj[1] <- NA
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,11] <- 0
+    bledne_dane$Firma[1] <- NA
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,12] <- "idk"
+    bledne_dane$Przekatna_ekranu_cal <- NA
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,13] <- -1
+    bledne_dane$Standard_ekranu <- -1
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,14] <- "chyba tak"
+    bledne_dane$Smart_TV <- "chyba tak"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,15] <- -1
+    bledne_dane$Android_TV <- -1
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[1,16] <- "TRUE"
+    bledne_dane$Technologia_HDR_High_Dynamic_Range <- "TRUE"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,17] <- "duzo"
+    bledne_dane$Zlacza_HDMI <- "duzo"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,18] <- rep(1, length(bledne_dane[,18]))
+    bledne_dane$Zlacza_USB <- "malo"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,19] <- "extra"
+    bledne_dane$Kolor_obudowy <- 1
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
     bledne_dane <- poprawne_dane
-    bledne_dane[,20] <- "a"
+    bledne_dane$Klasa_energetyczna <- "a"
     expect_false(sprawdz_poprawnosc_tv(bledne_dane))
     
   }))
