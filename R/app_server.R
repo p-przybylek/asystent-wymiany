@@ -120,7 +120,8 @@ app_server <- function( input, output, session ) {
   
   observe({
     lapply(best_models()$input_ID, function(input_id){
-      observeEvent(input[[input_id]], {
+      shinyjs::onclick(input_id, {
+        #print(input_id)
         output$modelplot <- {
           renderPlot(
             switch (urzadzenie(),
