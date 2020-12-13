@@ -31,12 +31,14 @@ app_server <- function( input, output, session ) {
   
   sorting <- reactiveVal("years_to_go")
   
-  # gdy zmiena sie sortowanie, uaktualnij obie listy na nowo wybrana wartosc
+  # gdy zmiena sie sortowanie, uaktualnij  wybrana wartosc
   observeEvent(input$sorting1, {
     sorting(input$sorting1)
+    urzadzenie_id(NA)
   })
   observeEvent(input$sorting2, {
     sorting(input$sorting2)
+    urzadzenie_id(NA)
     updateSelectInput(session, "sorting1", selected = sorting())
   })
   
@@ -92,9 +94,10 @@ app_server <- function( input, output, session ) {
   
   observe({
     if(is.na(urzadzenie_id())){
-      output$modelplot <- renderUI({}) #TODO (Napis "Wybierz model")
-      output$image <- renderUI({})
+      output$modelplot  <- renderUI({})
+      output$image      <- renderUI({})
       output$parameters <- renderUI({})
+      output$buy        <- renderUI({})
     }
   })
   
@@ -121,10 +124,12 @@ app_server <- function( input, output, session ) {
                      "models" = "main",
                      "main" = "models")
     shinydashboard::updateTabItems(session, "tabs", newtab)
-    output$modelplot <- renderUI({})
-    output$image <- renderUI({})
-    output$parameters <- renderTable({})
-    output$buy <- renderUI({})
+    
+    output$modelplot  <- renderUI({})
+    output$image      <- renderUI({})
+    output$parameters <- renderUI({})
+    output$buy        <- renderUI({})
+    
     updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())
   })
   
@@ -168,13 +173,13 @@ app_server <- function( input, output, session ) {
           renderUI({
             tags$img(src = switch(urzadzenie(),
                                   "fridges" = fridges[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"],
-                                  "tvs" = tvs[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]),
+                                  "tvs"     = tvs    [best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]),
                      width= "90%")
           })}
         output$parameters <- {
           param_table <- switch(urzadzenie(),
                                 "fridges" = data.frame(t(fridges[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))])),
-                                "tvs" = data.frame(t(tvs[best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))])))
+                                "tvs"     = data.frame(t(tvs    [best_models()[best_models()$input_ID == input_id,"ID"], names(get_attr_info(urzadzenie()))])))
           
           rownames(param_table) <- lapply(rownames(param_table), function(rowname){
             stringi::stri_replace_all_fixed(rowname, "_", " ")
@@ -214,10 +219,10 @@ app_server <- function( input, output, session ) {
         return(NA)
       
       
-      output$modelplot <- renderUI({})
-      output$image <- renderUI({})
+      output$modelplot  <- renderUI({})
+      output$image      <- renderUI({})
       output$parameters <- renderUI({})
-      output$buy <- renderUI({})  
+      output$buy        <- renderUI({})
       
       lapply(get_attr_info(urzadzenie()), function(list){
         filter_id <- ifelse(identical(list$type, "numeric"),

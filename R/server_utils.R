@@ -356,4 +356,3 @@ get_offers <- function(id, type_of_device){
   all_offers <- cbind(all_offers, NR = c(1:dim(all_offers)[1])) %>% purrr::transpose()
   all_offers
 }
-
