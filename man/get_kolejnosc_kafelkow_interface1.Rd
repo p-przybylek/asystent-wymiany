@@ -16,7 +16,7 @@ get_kolejnosc_kafelkow_interface1(
 
 \item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
 years_to_go - ile czasu czekamy do zwrotu inwestycji
-power_efficiency - co zuzyje najmniej pradu wg prognozy
+power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
 prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
 
 \item{cur_m_powers}{wektor aktualnego rocznego zurzycia pradu przez kolejne urzadzenia}

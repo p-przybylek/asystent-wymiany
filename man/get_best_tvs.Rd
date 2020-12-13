@@ -15,7 +15,7 @@ get_best_tvs(tv_con, el_cost, top_n = 5, filters = NA, criterion)
 
 \item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
 years_to_go - ile czasu czekamy do zwrotu inwestycji
-power_efficiency - co zuzyje najmniej pradu wg prognozy
+power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
 prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
 }
 \value{

@@ -411,7 +411,7 @@ tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
   return(switch(criterion,
                 'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
                 'prize' = paste0(wartosci_kryteriow, " zl"),
-                'power_efficiency' = paste0(round((wartosci_kryteriow/12)*el_cost, 2), " zl miesiecznie"))) # zaoszczedzonych
+                'power_efficiency' = paste0(round(wartosci_kryteriow*el_cost, 2), " zl miesiecznie"))) # zaoszczedzonych
 }
 
 

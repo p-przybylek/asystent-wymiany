@@ -25,7 +25,7 @@ get_best_models(
 
 \item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
 years_to_go - ile czasu czekamy do zwrotu inwestycji
-power_efficiency - co zuzyje najmniej pradu wg prognozy
+power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
 prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
 
 \item{cur_m_power}{roczne zuzycie pradu przez urzadzenie}
