@@ -180,7 +180,7 @@ app_server <- function( input, output, session ) {
                                                      new_m_price = best_models()[best_models()$input_ID == input_id,
                                                                                  'Cena'],
                                                      el_cost = el_cost,
-                                                     cur_month_power = cur_month_power),
+                                                     cur_month_power = cur_month_power_fridge),
                     "tvs" = {
                       X <- tv_con
                       
