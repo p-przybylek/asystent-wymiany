@@ -16,7 +16,7 @@ app_server <- function( input, output, session ) {
     shinydashboard::updateTabItems(session, "tabs", newtab)
   })
   
-  shinyjs::onclick("box-fridge", { # user wybral lodowki
+  shinyjs::onclick("box-fridges", { # user wybral lodowki
     newtab <- switch(input$tabs,
                      "main" = "models",
                      "models" = "main")
@@ -24,7 +24,7 @@ app_server <- function( input, output, session ) {
     urzadzenie("fridges")
   })
   
-  shinyjs::onclick("box-tv", { # user wybral TV
+  shinyjs::onclick("box-tvs", { # user wybral TV
     newtab <- switch(input$tabs,
                      "main" = "models",
                      "models" = "main")
@@ -124,16 +124,17 @@ app_server <- function( input, output, session ) {
                                                    criterion = sorting())
     do_wyswietlenia <- attr(kolejnosc, "do_wyswietlania") # kryterium sortowania: cena, czas do zwrotu, miesieczna oszczednosc
     
+    
     # tu posortowane kafelki beda ustawiane w odpowiedniej kolejnosci
     div(id = "kafelki-box",
       fluidRow(
-        box_interfejs1("box-fridge", "LODÓWKI"),
-        box_interfejs1("box-tv", "TELEWIZORY"),
-        box_interfejs1("box-kettle", "CZAJNIKI")),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[1]), p(do_wyswietlenia[1], class="text-kafelki")),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[2]), p(do_wyswietlenia[2], class="text-kafelki")),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[3]), p(do_wyswietlenia[3], class="text-kafelki"))),
       fluidRow(
-        box_interfejs1("box-washing-machine", "PRALKI"),
-        box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
-        box_interfejs1("box-microwave", "MIKROFALÓWKI"))
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[4]), p(do_wyswietlenia[4], class="text-kafelki")),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[5]), p(do_wyswietlenia[5], class="text-kafelki")),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[6]), p(do_wyswietlenia[6], class="text-kafelki"))),
     )
   })
   
