@@ -7,9 +7,9 @@
 get_best_fridges(cur_m_power, el_cost, top_n = 5, filters = NA, criterion)
 }
 \arguments{
-\item{cur_m_power}{moc aktualne posiadanego przez urzytkownika uzadzenia}
+\item{cur_m_power}{roczne zuzycie pradu przez urzadzenie}
 
-\item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
+\item{el_cost}{koszt 1kWh pradu w domostwie}
 
 \item{top_n}{liczba najleprzych modeli do pokazania}
 

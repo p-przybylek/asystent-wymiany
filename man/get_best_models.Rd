@@ -6,9 +6,9 @@
 \usage{
 get_best_models(
   urzadzenie,
-  cur_m_power,
-  el_cost,
+  cur_m_power_fridge,
   tv_con,
+  el_cost,
   top_n = 5,
   filters = NA,
   criterion = "years_to_go"
@@ -17,9 +17,7 @@ get_best_models(
 \arguments{
 \item{urzadzenie}{typ urzadzenia do wyswietlenia}
 
-\item{cur_m_power}{moc aktualne posiadanego przez urzytkownika uzadzenia}
-
-\item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
+\item{el_cost}{koszt 1kWh pradu w domostwie}
 
 \item{top_n}{liczba najleprzych modeli do pokazania}
 
@@ -29,6 +27,8 @@ get_best_models(
 years_to_go - ile czasu czekamy do zwrotu inwestycji
 power_efficiency - co zuzyje najmniej pradu wg prognozy
 prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
+
+\item{cur_m_power}{roczne zuzycie pradu przez urzadzenie}
 }
 \value{
 Patrz `get_best_fridges` oraz `get_best_tvs`

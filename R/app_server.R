@@ -32,9 +32,14 @@ app_server <- function( input, output, session ) {
     urzadzenie("tvs")
   })
   
-  cur_month_power <- get_fridge_con()
-  cur_m_power <- sum(cur_month_power$kWh)
   el_cost <- 0.617 # koszt 1 kWh w złotówkach
+  
+  # lodowka
+  cur_month_power_fridge <- get_fridge_con()
+  cur_m_power_fridge <- sum(cur_month_power_fridge$kWh)
+  
+  # TV
+  tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
   
   sorting <- reactiveVal("years_to_go")
   
@@ -50,7 +55,8 @@ app_server <- function( input, output, session ) {
   })
   
   best_models <- reactive({
-    out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con, filters = filters(), criterion = sorting())
+    out <- get_best_models(urzadzenie = urzadzenie(), cur_m_power = cur_m_power_fridge, tv_con = tv_con,
+                           el_cost = el_cost, filters = filters(), criterion = sorting())
     if(is.null(out)) return(NULL)
     out$input_ID <- paste0('actionButton_', out[['ID']])
     out$label <- sub(ifelse(urzadzenie() == "fridges", "Lodówka ", "Telewizor "), "", out[['Nazwa']])
@@ -59,8 +65,6 @@ app_server <- function( input, output, session ) {
   })
   # Replace the second ' ' with <br>
   # spaces <- stringi::stri_locate_all(best_models()$label, fixed = ' ')[[1]]['start']
-  
-  tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
   
   usun_wyswietlany_model <- function(){ # usuwa elementy UI zalezne od wybranego modelu
     output$modelplot  <- renderUI({})
@@ -113,13 +117,13 @@ app_server <- function( input, output, session ) {
   })
   
   output$kafelki <- renderUI({
-    # Tu kafelki beda sortowane
-    
-    
-    
-    
-    kolejnosc <- c("fridges", "tvs")
-    do_wyswietlenia <- c("cena 1", "cena 2") # albo cena, albo czas do zwrotu, albo miesieczna oszczednosc
+    # kolejnosc w ktorej sa posortowane urzadzenia po kryterium
+    kolejnosc <- get_kolejnosc_kafelkow_interface1(cur_m_power_fridge = cur_m_power_fridge,
+                                                   tv_con = tv_con,
+                                                   el_cost = el_cost,
+                                                   criterion = sorting())
+    do_wyswietlenia <- attr(kolejnosc, "do_wyswietlenia") # kryterium sortowania: cena, czas do zwrotu, miesieczna oszczednosc
+    attr(kolejnosc, "do_wyswietlenia") <- NULL
     
     # tu posortowane kafelki beda ustawiane w odpowiedniej kolejnosci
     div(id = "kafelki-box",
@@ -171,7 +175,7 @@ app_server <- function( input, output, session ) {
         output$modelplot <- {
           renderPlot(
             switch (urzadzenie(),
-                    "fridges" = yearly_forecast_plot(cur_m_power = cur_m_power,
+                    "fridges" = yearly_forecast_plot(cur_m_power = cur_m_power_fridge,
                                                      new_m_power = best_models()[best_models()$input_ID == input_id,
                                                                                  'Roczne_zuzycie_pradu_kWh'], # Pobor_mocy_tryb_czuwania_W Pobor_mocy_tryb_wlaczenia_W
                                                      new_m_price = best_models()[best_models()$input_ID == input_id,

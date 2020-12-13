@@ -4,6 +4,8 @@
 #' 
 #' @inheritParams yearly_forecast_plot
 #' @param urzadzenie typ urzadzenia do wyswietlenia
+#' @param cur_m_power roczne zuzycie pradu przez urzadzenie
+#' @param el_cost koszt 1kWh pradu w domostwie
 #' @param top_n liczba najleprzych modeli do pokazania
 #' @param filters filtry do zaaplikowania (być może NA)
 #' @param criterion String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
@@ -15,9 +17,9 @@
 #' @export
 #' 
 get_best_models <- function(urzadzenie, 
-                            cur_m_power, 
-                            el_cost, 
+                            cur_m_power_fridge, 
                             tv_con, 
+                            el_cost, 
                             top_n = 5, 
                             filters = NA,
                             criterion = "years_to_go"){
@@ -36,8 +38,8 @@ get_best_models <- function(urzadzenie,
     rlang::abort(paste0('`criterion` must one of: ', stringr::str_flatten(allowed_criterions, collapse = ', ')))
   }
   return(switch(urzadzenie, # odpala odpowiednia funkcje dla danego urzadzenia
-                "fridges" = get_best_fridges(cur_m_power, el_cost, top_n, filters, criterion),
-                "tvs"     = get_best_tvs    (cur_m_power, el_cost, tv_con, top_n, filters, criterion)))
+                "fridges" = get_best_fridges(cur_m_power_fridge, el_cost, top_n, filters, criterion),
+                "tvs"     = get_best_tvs    (tv_con,             el_cost, top_n, filters, criterion)))
 }
 
 
@@ -91,7 +93,9 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
 #' z informacjami o najlepszych telewizorach wg parametru `criterion`.
 #' @export
 #' 
-get_best_tvs <- function(cur_m_power, el_cost, tv_con, top_n = 5, filters = NA, criterion){
+get_best_tvs <- function(tv_con, el_cost, top_n = 5, filters = NA, criterion){
+  cur_m_power <- sum(tv_con$kWh)
+  
   utils::data('tvs', package = 'asystentWymiany', envir = rlang::current_env())
   if(!sprawdz_poprawnosc_tv(tvs))
     shinyalert::shinyalert("",
@@ -356,3 +360,34 @@ get_offers <- function(id, type_of_device){
   all_offers <- cbind(all_offers, NR = c(1:dim(all_offers)[1])) %>% purrr::transpose()
   all_offers
 }
+
+
+#' Ustala kolejnosc kafelkow na interfejsie 1
+#' 
+#' Na podstawie aktulanego zurzycia energii znajduje najkorzystniejsze wymiany ze wzgledu na wybrane przez uzytkownika kryterium
+#' 
+#' @param cur_m_powers wektor aktualnego rocznego zurzycia pradu przez kolejne urzadzenia
+#' @inheritParams get_best_models
+#' 
+#' @return wektor `c("fridges", "tvs", "kettles", "washing-machines", "air-conditionings", "microwaves")` posortowanych pod wzgledem danego kryterium.
+#' @export
+get_kolejnosc_kafelkow_interface1 <- function(cur_m_power_fridge, tv_con, el_cost, criterion){
+  urzadzenia <- c("fridges", "tvs")
+  
+  
+  
+  
+  
+  out <- c("fridges", "tvs") # , "kettles", "washing-machines", "air-conditionings", "microwaves"
+  attr(out, "do_wyswietlania") <- c("cena 1", "cena 2")
+  
+  out
+}
+
+
+
+
+
+
+
+
