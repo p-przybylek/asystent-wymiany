@@ -31,7 +31,7 @@ app_server <- function( input, output, session ) {
   
   sorting <- reactiveVal("years_to_go")
   
-  observe({ #TODO po zrobieniu filtrowania zmienia się sortowanie na domyślne, chyba trzeba to naprawić
+  observe({
     if(input$tabs == "main"){
       if(!is.null(input$sorting1)){
         sorting(input$sorting1)
@@ -51,7 +51,7 @@ app_server <- function( input, output, session ) {
     })
   
   best_models <- reactive({
-    out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con(), filters = filters(), criterion = sorting())
+    out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con, filters = filters(), criterion = sorting())
     if(is.null(out)) return(NULL)
     out$input_ID <- paste0('actionButton_', out[['ID']])
     out$label <- sub(ifelse(urzadzenie() == "fridges", "Lodówka ", "Telewizor "), "", out[['Nazwa']])
@@ -61,18 +61,13 @@ app_server <- function( input, output, session ) {
   # Replace the second ' ' with <br>
   # spaces <- stringi::stri_locate_all(best_models()$label, fixed = ' ')[[1]]['start']
   
-  tv_con <- reactive({
-    if(!is.na(urzadzenie()) & urzadzenie() == "tvs")
-      get_tv_con() # to laduje sie ok. 8 sekund, za kazdym razem, gdy urzytkownik wejdzie w TV
-    else
-      NA
-  })
+  tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
   
   output$box_models <- renderUI(
     sidebarLayout(
       sidebarPanel(
         h1(ifelse(urzadzenie() == "fridges","LODÓWKI", "TELEWIZORY"), align="center"),
-        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = "years_to_go")),
+        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                            "Nie ma takich modeli!",
                                                            type = "error",
@@ -95,7 +90,7 @@ app_server <- function( input, output, session ) {
             actionButton("rtmain", "Zobacz inne urządzenia")),
         div(id="box-rightsidebar",
             "Parametry",
-            shinycssloaders::withSpinner(uiOutput("image"), color = "#ff8000"),
+            shinycssloaders::withSpinner(uiOutput("image"), color = "#ffc34d"),
             shinycssloaders::withSpinner(tableOutput("parameters"), color = "#ff8000"),
             uiOutput("buy"))),
         width=9)
@@ -156,7 +151,7 @@ app_server <- function( input, output, session ) {
                                                      el_cost = el_cost,
                                                      cur_month_power = cur_month_power),
                     "tvs" = {
-                      X <- tv_con()
+                      X <- tv_con
                       
                       X$new <- get_new_tv_con(best_models()[best_models()$input_ID == input_id,
                                                             "Pobor_mocy_tryb_czuwania_W"],
