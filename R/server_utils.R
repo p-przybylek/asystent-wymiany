@@ -10,7 +10,7 @@
 #' @param filters filtry do zaaplikowania (być może NA)
 #' @param criterion String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
 #' years_to_go - ile czasu czekamy do zwrotu inwestycji
-#' power_efficiency - co zuzyje najmniej pradu wg prognozy
+#' power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
 #' prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego
 #' 
 #' @return Patrz `get_best_fridges` oraz `get_best_tvs`
@@ -73,14 +73,15 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
   })
   fridges <- fridges[fridges$years_to_go < 100, ] # liczba lat do zwrotu mniejsza niz 100
   if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
+  fridges$Miesieczna_roznica_zuzycia_pradu <- (cur_m_power - fridges$Roczne_zuzycie_pradu_kWh)/12
   criterion_column <- switch (criterion,
     'years_to_go' = 'years_to_go',
     'prize' = 'Cena',
-    'power_efficiency' = 'Roczne_zuzycie_pradu_kWh'
+    'power_efficiency' = 'Miesieczna_roznica_zuzycia_pradu'
   )
   # Każde kryterium im mniejsze, tym lepsze
   fridges$criterion <- fridges[[criterion_column]]
-  fridges[head(order(fridges[['criterion']]), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
+  fridges[head(order(fridges[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
 }
 
 #' Najlepsze telewizory
@@ -119,13 +120,14 @@ get_best_tvs <- function(tv_con, el_cost, top_n = 5, filters = NA, criterion){
                     new_m_price = tvs[i,'Cena'],
                     el_cost)
   })
+  tvs$Miesieczna_roznica_zuzycia_pradu <- (cur_m_power - tvs$Pobor_mocy_est)/12
   criterion_column <- switch (criterion,
                               'years_to_go' = 'years_to_go',
                               'prize' = 'Cena',
-                              'power_efficiency' = 'Pobor_mocy_est'
+                              'power_efficiency' = 'Miesieczna_roznica_zuzycia_pradu'
   )
   tvs$criterion <- tvs[[criterion_column]]
-  tvs[head(order(tvs[['criterion']]), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
+  tvs[head(order(tvs[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
 }
 
 #' Get info about attributes
