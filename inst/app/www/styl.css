@@ -32,6 +32,66 @@
 #box-page {
   margin: 40px 40px 40px 40px;
 }
+#box-fridges{
+  background-image: url("img/fridge.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#box-fridges:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  transform: translateY(-0.25em);
+}
+
+#box-tvs{
+  background-image: url("img/tv.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#box-tvs:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  transform: translateY(-0.25em);
+}
+
+#box-kettles{
+  background-image: url("img/kettle.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.5;
+}
+
+#box-microwaves{
+  background-image: url("img/microwave.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.5;
+}
+
+#box-washing-machines{
+  background-image: url("img/washing-machine.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.5;
+}
+
+#box-air-conditionings{
+  background-image: url("img/air-conditioning.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.5;  
+}
+
+.text-kafelki{
+  font-size: 50px;
+  padding-top:100px;
+}
 
 #box-modelplot {
   height: 800px;
