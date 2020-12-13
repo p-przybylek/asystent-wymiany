@@ -9,6 +9,13 @@ app_server <- function( input, output, session ) {
   urzadzenie <- reactiveVal(NA)
   urzadzenie_id <- reactiveVal(NA)
   
+  shinyjs::onclick("start_button", { # user zaczyna swa wspaniala przygode z aplikacja
+    newtab <- switch(input$tabs,
+                     "start" = "main",
+                     "main" = "start")
+    shinydashboard::updateTabItems(session, "tabs", newtab)
+  })
+  
   shinyjs::onclick("box-fridge", { # user wybral lodowki
     newtab <- switch(input$tabs,
                      "main" = "models",
@@ -103,6 +110,28 @@ app_server <- function( input, output, session ) {
     if(is.na(urzadzenie_id())){
       usun_wyswietlany_model()
     }
+  })
+  
+  output$kafelki <- renderUI({
+    # Tu kafelki beda sortowane
+    
+    
+    
+    
+    kolejnosc <- c("fridges", "tvs")
+    do_wyswietlenia <- c("cena 1", "cena 2") # albo cena, albo czas do zwrotu, albo miesieczna oszczednosc
+    
+    # tu posortowane kafelki beda ustawiane w odpowiedniej kolejnosci
+    div(id = "kafelki-box",
+      fluidRow(
+        box_interfejs1("box-fridge", "LODÓWKI"),
+        box_interfejs1("box-tv", "TELEWIZORY"),
+        box_interfejs1("box-kettle", "CZAJNIKI")),
+      fluidRow(
+        box_interfejs1("box-washing-machine", "PRALKI"),
+        box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
+        box_interfejs1("box-microwave", "MIKROFALÓWKI"))
+    )
   })
   
   observeEvent(input$filters, {

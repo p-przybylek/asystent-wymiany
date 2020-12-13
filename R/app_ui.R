@@ -15,11 +15,14 @@ app_ui <- function(request) {
                                                                   shinydashboard::dropdownMenu(type = NULL, badgeStatus = NULL, icon = icon("sign-out-alt"))),
                                   shinydashboard::dashboardSidebar(disable = TRUE,
                                                                    shinydashboard::sidebarMenu(id = "tabs",
+                                                                                               shinydashboard::menuItem("Strona startowa", tabName = "start"),
                                                                                                shinydashboard::menuItem("Strona główna", tabName = "main"),
                                                                                                shinydashboard::menuItem("Modele", tabName = "models"),
                                                                                                shinydashboard::menuItem("Oferty", tabName = "offers"))),
                                   shinydashboard::dashboardBody(
                                     shinydashboard::tabItems(
+                                      shinydashboard::tabItem(tabName = "start",
+                                                              actionButton("start_button", "START")),
                                       shinydashboard::tabItem(tabName = "main",
                                                               fluidRow(column(12, align = "center",
                                                                               selectInput("sorting1", NULL,
@@ -27,14 +30,7 @@ app_ui <- function(request) {
                                                                                                       "Najtańsze wymiany" = "prize",
                                                                                                       "Najbardziej energooszczędne wymiany" = "power_efficiency")))),
                                                               div(id = "box-page",
-                                                                  fluidRow(
-                                                                    box_interfejs1("box-fridge", "LODÓWKI"),
-                                                                    box_interfejs1("box-tv", "TELEWIZORY"),
-                                                                    box_interfejs1("box-kettle", "CZAJNIKI")),
-                                                                  fluidRow(
-                                                                    box_interfejs1("box-washing-machine", "PRALKI"),
-                                                                    box_interfejs1("box-air-conditioning", "KLIMATYZACJE"),
-                                                                    box_interfejs1("box-microwave", "MIKROFALÓWKI")))),
+                                                                  uiOutput("kafelki"))),
                                       shinydashboard::tabItem(tabName = "models", uiOutput("box_models")),
                                       shinydashboard::tabItem(tabName = "offers", uiOutput("box_offers"))))),
     tags[["footer"]]("Naatu Energy", class = "footer")
