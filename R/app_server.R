@@ -31,24 +31,14 @@ app_server <- function( input, output, session ) {
   
   sorting <- reactiveVal("years_to_go")
   
-  observe({
-    if(input$tabs == "main"){
-      if(!is.null(input$sorting1)){
-        sorting(input$sorting1)
-        updateSelectInput(session, "sorting1", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = input$sorting1)
-      }
-    }
-    if(input$tabs == "models"){
-      if(!is.null(input$sorting2)){
-        sorting(input$sorting2)
-        output$modelplot <- renderUI({})
-        output$image <- renderUI({})
-        output$parameters <- renderTable({})
-        output$buy <- renderUI({})
-        updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = input$sorting2)
-      }
-    }
-    })
+  # gdy zmiena sie sortowanie, uaktualnij obie listy na nowo wybrana wartosc
+  observeEvent(input$sorting1, {
+    sorting(input$sorting1)
+  })
+  observeEvent(input$sorting2, {
+    sorting(input$sorting2)
+    updateSelectInput(session, "sorting1", selected = sorting())
+  })
   
   best_models <- reactive({
     out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con, filters = filters(), criterion = sorting())
@@ -66,8 +56,11 @@ app_server <- function( input, output, session ) {
   output$box_models <- renderUI(
     sidebarLayout(
       sidebarPanel(
-        h1(ifelse(urzadzenie() == "fridges","LODÓWKI", "TELEWIZORY"), align="center"),
-        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())),
+        h1(ifelse(urzadzenie() == "fridges", "LODÓWKI", "TELEWIZORY"), align="center"),
+        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go",
+                                                 "Najtańsze wymiany" = "prize",
+                                                 "Najbardziej energooszczędne wymiany" = "power_efficiency"), 
+                             selected = sorting())),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                            "Nie ma takich modeli!",
                                                            type = "error",
@@ -132,7 +125,7 @@ app_server <- function( input, output, session ) {
     output$image <- renderUI({})
     output$parameters <- renderTable({})
     output$buy <- renderUI({})
-    updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = "years_to_go")
+    updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())
   })
   
   observe({
