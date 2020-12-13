@@ -28,8 +28,30 @@ app_server <- function( input, output, session ) {
   cur_month_power <- get_fridge_con()
   cur_m_power <- sum(cur_month_power$kWh)
   el_cost <- 0.617 # koszt 1 kWh w złotówkach
+  
+  sorting <- reactiveVal("years_to_go")
+  
+  observe({ #TODO po zrobieniu filtrowania zmienia się sortowanie na domyślne, chyba trzeba to naprawić
+    if(input$tabs == "main"){
+      if(!is.null(input$sorting1)){
+        sorting(input$sorting1)
+        updateSelectInput(session, "sorting1", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = input$sorting1)
+      }
+    }
+    if(input$tabs == "models"){
+      if(!is.null(input$sorting2)){
+        sorting(input$sorting2)
+        output$modelplot <- renderUI({})
+        output$image <- renderUI({})
+        output$parameters <- renderTable({})
+        output$buy <- renderUI({})
+        updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = input$sorting2)
+      }
+    }
+    })
+  
   best_models <- reactive({
-    out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con(), filters = filters())
+    out <- get_best_models(urzadzenie(), cur_m_power, el_cost, tv_con = tv_con(), filters = filters(), criterion = sorting())
     if(is.null(out)) return(NULL)
     out$input_ID <- paste0('actionButton_', out[['ID']])
     out$label <- sub(ifelse(urzadzenie() == "fridges", "Lodówka ", "Telewizor "), "", out[['Nazwa']])
@@ -50,8 +72,7 @@ app_server <- function( input, output, session ) {
     sidebarLayout(
       sidebarPanel(
         h1(ifelse(urzadzenie() == "fridges","LODÓWKI", "TELEWIZORY"), align="center"),
-        fluidRow(selectInput("sorting", NULL, 
-                             choices = c("Najtańsze wymiany", "Najbardziej opłacalne wymiany", "Najbardziej energooszczędne wymiany"))),
+        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = "years_to_go")),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                            "Nie ma takich modeli!",
                                                            type = "error",
@@ -94,7 +115,7 @@ app_server <- function( input, output, session ) {
       modalDialog(
         wellPanel(
           class = "filters",
-          create_filters_elements(get_attr_info(urzadzenie())),
+          create_filters_elements(get_attr_info(urzadzenie()))
         ),
         actionButton(inputId = "filtering", label = "Zastosuj", class = "btn filtering"),
         easyClose = F,
@@ -116,12 +137,14 @@ app_server <- function( input, output, session ) {
     output$image <- renderUI({})
     output$parameters <- renderTable({})
     output$buy <- renderUI({})
+    updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = "years_to_go")
   })
   
   observe({
     lapply(best_models()$input_ID, function(input_id){
       shinyjs::onclick(input_id, {
-        #print(input_id)
+        id <- stringr::str_extract(input_id, "\\d+")
+        urzadzenie_id(id)
         output$modelplot <- {
           renderPlot(
             switch (urzadzenie(),
@@ -227,13 +250,6 @@ app_server <- function( input, output, session ) {
         br(),
         fluidRow(column(12, align = "center", actionButton("rtmodels", "Zobacz inne modele"))))
   )
-  
-  observe({
-    lapply(best_models()$input_ID, function(input_id){
-      observeEvent(input[[input_id]], {
-        id <- stringr::str_extract(input_id, "\\d+")
-        urzadzenie_id(id)
-      })})})
   
   output$id_offers <- renderUI({
     all_offers <- get_offers(urzadzenie_id(), urzadzenie())
