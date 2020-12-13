@@ -54,7 +54,14 @@ app_server <- function( input, output, session ) {
   # spaces <- stringi::stri_locate_all(best_models()$label, fixed = ' ')[[1]]['start']
   
   tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
-
+  
+  usun_wyswietlany_model <- function(){ # usuwa elementy UI zalezne od wybranego modelu
+    output$modelplot  <- renderUI({})
+    output$image      <- renderUI({})
+    output$parameters <- renderUI({})
+    output$buy        <- renderUI({})
+  }
+  
   output$box_models <- renderUI(
     sidebarLayout(
       sidebarPanel(
@@ -94,10 +101,7 @@ app_server <- function( input, output, session ) {
   
   observe({
     if(is.na(urzadzenie_id())){
-      output$modelplot  <- renderUI({})
-      output$image      <- renderUI({})
-      output$parameters <- renderUI({})
-      output$buy        <- renderUI({})
+      usun_wyswietlany_model()
     }
   })
   
@@ -125,10 +129,7 @@ app_server <- function( input, output, session ) {
                      "main" = "models")
     shinydashboard::updateTabItems(session, "tabs", newtab)
     
-    output$modelplot  <- renderUI({})
-    output$image      <- renderUI({})
-    output$parameters <- renderUI({})
-    output$buy        <- renderUI({})
+    usun_wyswietlany_model()
     
     updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())
   })
@@ -219,10 +220,7 @@ app_server <- function( input, output, session ) {
         return(NA)
       
       
-      output$modelplot  <- renderUI({})
-      output$image      <- renderUI({})
-      output$parameters <- renderUI({})
-      output$buy        <- renderUI({})
+      usun_wyswietlany_model()
       
       lapply(get_attr_info(urzadzenie()), function(list){
         filter_id <- ifelse(identical(list$type, "numeric"),
