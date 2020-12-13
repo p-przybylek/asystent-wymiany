@@ -122,8 +122,7 @@ app_server <- function( input, output, session ) {
                                                    tv_con = tv_con,
                                                    el_cost = el_cost,
                                                    criterion = sorting())
-    do_wyswietlenia <- attr(kolejnosc, "do_wyswietlenia") # kryterium sortowania: cena, czas do zwrotu, miesieczna oszczednosc
-    attr(kolejnosc, "do_wyswietlenia") <- NULL
+    do_wyswietlenia <- attr(kolejnosc, "do_wyswietlania") # kryterium sortowania: cena, czas do zwrotu, miesieczna oszczednosc
     
     # tu posortowane kafelki beda ustawiane w odpowiedniej kolejnosci
     div(id = "kafelki-box",

@@ -373,21 +373,43 @@ get_offers <- function(id, type_of_device){
 #' @export
 get_kolejnosc_kafelkow_interface1 <- function(cur_m_power_fridge, tv_con, el_cost, criterion){
   urzadzenia <- c("fridges", "tvs")
+  n <- length(urzadzenia)
   
   
+  wartosci_kryteriow <- numeric(n)
+  for(i in 1:n){
+    wartosci_kryteriow[i] <- get_best_models(urzadzenia[i],
+                                             cur_m_power_fridge,
+                                             tv_con,
+                                             el_cost,
+                                             top_n = 1,
+                                             criterion = criterion)$criterion
+  }
   
+  out <- urzadzenia[kolejnosc_kryteriow(wartosci_kryteriow, criterion)] # ustawienie urzadzen w odpowiedniej kolejnosci
   
+  out <- c(out, "kettles", "washing-machines", "air-conditionings", "microwaves") # sztucznie dodano wiecej urzadzen
   
-  out <- c("fridges", "tvs") # , "kettles", "washing-machines", "air-conditionings", "microwaves"
-  attr(out, "do_wyswietlania") <- c("cena 1", "cena 2")
+  attr(out, "do_wyswietlania") <- c(tekst_do_wyswietlania(wartosci_kryteriow[kolejnosc_kryteriow(wartosci_kryteriow, criterion)], # ustawienie tekstow w odpowiedniej kolejnosci
+                                                          criterion, el_cost),
+                                    rep("Niedostepne", 4))
   
   out
 }
 
 
+kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
+  if(criterion == "power_efficiency")
+    return(order(-wartosci_kryteriow))
+  return(order(wartosci_kryteriow))
+}
 
 
-
-
+tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
+  return(switch(criterion,
+                'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
+                'prize' = paste0(wartosci_kryteriow, " zl"),
+                'power_efficiency' = paste0(round((wartosci_kryteriow/12)*el_cost, 2), " zl miesiecznie"))) # zaoszczedzonych
+}
 
 
