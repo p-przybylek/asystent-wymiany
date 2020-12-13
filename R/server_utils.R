@@ -390,7 +390,7 @@ get_kolejnosc_kafelkow_interface1 <- function(cur_m_power_fridge, tv_con, el_cos
   
   out <- urzadzenia[kolejnosc_kryteriow(wartosci_kryteriow, criterion)] # ustawienie urzadzen w odpowiedniej kolejnosci
   
-  out <- c(out, "kettles", "washing-machines", "air-conditionings", "microwaves") # sztucznie dodano wiecej urzadzen
+  out <- c(out, "kettles", "washing-machines", "microwaves", "air-conditionings") # sztucznie dodano wiecej urzadzen
   
   attr(out, "do_wyswietlania") <- c(tekst_do_wyswietlania(wartosci_kryteriow[kolejnosc_kryteriow(wartosci_kryteriow, criterion)], # ustawienie tekstow w odpowiedniej kolejnosci
                                                           criterion, el_cost),
@@ -410,8 +410,8 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
   return(switch(criterion,
                 'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
-                'prize' = paste0(wartosci_kryteriow, " zl"),
-                'power_efficiency' = paste0(round(wartosci_kryteriow*el_cost, 2), " zl miesiecznie"))) # zaoszczedzonych
+                'prize' = paste0(wartosci_kryteriow, " zł"),
+                'power_efficiency' = paste0(round(wartosci_kryteriow*el_cost, 2), " zł miesięcznie"))) # zaoszczedzonych
 }
 
 
