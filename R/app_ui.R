@@ -21,7 +21,11 @@ app_ui <- function(request) {
                                   shinydashboard::dashboardBody(
                                     shinydashboard::tabItems(
                                       shinydashboard::tabItem(tabName = "main",
-                                                              fluidRow(column(12, align = "center", selectInput("sorting1", NULL, choices = c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency")))),
+                                                              fluidRow(column(12, align = "center",
+                                                                              selectInput("sorting1", NULL,
+                                                                                          choices = c("Najbardziej opłacalne wymiany" = "years_to_go",
+                                                                                                      "Najtańsze wymiany" = "prize",
+                                                                                                      "Najbardziej energooszczędne wymiany" = "power_efficiency")))),
                                                               div(id = "box-page",
                                                                   fluidRow(
                                                                     box_interfejs1("box-fridge", "LODÓWKI"),
