@@ -400,6 +400,16 @@ get_kolejnosc_kafelkow_interface1 <- function(cur_m_power_fridge, tv_con, el_cos
 }
 
 
+
+#' Ustala kolejnosc kryterium od najleprzego do najgorszego
+#' 
+#' Wedlog jednego z kryteriow leprze sa te modele, ktore maja wartosc najwieksza, wedlog pozostalych dwoch - najmniejsza
+#' 
+#' @param wartosci_kryteriow Wartosci zwracane przez `get_best_models` w kolumnie `criterion`
+#' @inheritParams get_best_models
+#' 
+#' @return permuteację zbioru 1:n ustalajacego kolenosc `wartosci_kryteriow`
+#' @export
 kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
   if(criterion == "power_efficiency")
     return(order(-wartosci_kryteriow))
@@ -407,11 +417,18 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 }
 
 
-tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
+#' Ustala jakie napisy powinny sie wyswietlac na kafelkach interfejsu 1
+#' 
+#' @inheritParams kolejnosc_kryteriow
+#' @inheritParams get_best_models
+#' 
+#' @return wektor napisow majacych byc wyswietlane na interfejsie 1
+#' @export
+tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion){
   return(switch(criterion,
                 'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
                 'prize' = paste0(wartosci_kryteriow, " zł"),
-                'power_efficiency' = paste0(round(wartosci_kryteriow*el_cost, 2), " zł miesięcznie"))) # zaoszczedzonych
+                'power_efficiency' = paste0(round(wartosci_kryteriow, 2), " zł miesięcznie"))) # zaoszczedzonych
 }
 
 
