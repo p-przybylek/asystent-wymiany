@@ -134,7 +134,7 @@ app_server <- function( input, output, session ) {
       fluidRow(
         shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[4]), p(do_wyswietlenia[4], class="text-kafelki")),
         shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[5]), p(do_wyswietlenia[5], class="text-kafelki")),
-        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[6]), p(do_wyswietlenia[6], class="text-kafelki"))),
+        shinydashboard::box(width = 4, class = "box", id = paste0("box-",kolejnosc[6]), p(do_wyswietlenia[6], class="text-kafelki")))
     )
   })
   
