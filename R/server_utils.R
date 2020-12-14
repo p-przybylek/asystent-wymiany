@@ -79,7 +79,6 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
     'prize' = 'Cena',
     'power_efficiency' = 'Miesieczna_roznica_zuzycia_pradu'
   )
-  # Każde kryterium im mniejsze, tym lepsze
   fridges$criterion <- fridges[[criterion_column]]
   fridges[head(order(fridges[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
 }
