@@ -4,7 +4,7 @@
 \alias{tekst_do_wyswietlania}
 \title{Ustala jakie napisy powinny sie wyswietlac na kafelkach interfejsu 1}
 \usage{
-tekst_do_wyswietlania(wartosci_kryteriow, criterion)
+tekst_do_wyswietlania(wartosci_kryteriow, criterion, el_cost)
 }
 \arguments{
 \item{wartosci_kryteriow}{Wartosci zwracane przez `get_best_models` w kolumnie `criterion`}
@@ -13,6 +13,8 @@ tekst_do_wyswietlania(wartosci_kryteriow, criterion)
 years_to_go - ile czasu czekamy do zwrotu inwestycji
 power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
 prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
+
+\item{el_cost}{koszt 1kWh pradu w domostwie}
 }
 \value{
 wektor napisow majacych byc wyswietlane na interfejsie 1

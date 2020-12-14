@@ -423,11 +423,11 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 #' 
 #' @return wektor napisow majacych byc wyswietlane na interfejsie 1
 #' @export
-tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion){
+tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
   return(switch(criterion,
                 'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
                 'prize' = paste0(wartosci_kryteriow, " zł"),
-                'power_efficiency' = paste0(round(wartosci_kryteriow, 2), " zł miesięcznie"))) # zaoszczedzonych
+                'power_efficiency' = paste0(round(wartosci_kryteriow * el_cost, 2), " zł miesięcznie"))) # zaoszczedzonych
 }
 
 

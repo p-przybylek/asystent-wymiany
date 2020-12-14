@@ -134,7 +134,7 @@ test_that("kolejnosc_kryteriow daje poprawna kolejnosc dla wszystkich mzliwych k
 test_that("tekst_do_wyswietlania daje poprawny tekst", {
   expect_equal(c("600 lat", "300 lat", "900 lat"), tekst_do_wyswietlania(c(600, 300, 900), "years_to_go"))
   expect_equal(c("600 zł", "300 zł", "900 zł"), tekst_do_wyswietlania(c(600, 300, 900), "prize"))
-  expect_equal(c("600 zł miesięcznie", "300 zł miesięcznie", "900 zł miesięcznie"), tekst_do_wyswietlania(c(600, 300, 900), "power_efficiency"))
+  expect_equal(c("600 zł miesięcznie", "300 zł miesięcznie", "900 zł miesięcznie"), tekst_do_wyswietlania(c(600/0.617, 300/0.617, 900/0.617), "power_efficiency", 0.617))
 })
 
 
