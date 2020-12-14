@@ -22,7 +22,7 @@ app_ui <- function(request) {
                                   shinydashboard::dashboardBody(
                                     shinydashboard::tabItems(
                                       shinydashboard::tabItem(tabName = "start",
-                                                              actionButton("start_button", "START")),
+                                                              fluidRow(column(12, align = "center", actionButton("start_button", "START")))),
                                       shinydashboard::tabItem(tabName = "main",
                                                               fluidRow(column(12, align = "center",
                                                                               selectInput("sorting1", NULL,
