@@ -77,9 +77,10 @@ app_server <- function( input, output, session ) {
     sidebarLayout(
       sidebarPanel(
         h1(ifelse(urzadzenie() == "fridges", "LODÓWKI", "TELEWIZORY"), align="center"),
-        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go",
-                                                 "Najtańsze wymiany" = "prize",
-                                                 "Najbardziej energooszczędne wymiany" = "power_efficiency"), 
+        fluidRow(selectInput("sorting2", NULL, c("Najbardziej opłacalne wymiany"       = "years_to_go",
+                                                 "Najtańsze wymiany"                   = "prize",
+                                                 "Najbardziej energooszczędne wymiany" = "power_efficiency",
+                                                 "Koszt po 5 latach użytkowania"       = "true_cost"), 
                              selected = sorting())),
         if(is.null(best_models()))  shinyalert::shinyalert("",
                                                            "Nie ma takich modeli!",
@@ -164,7 +165,11 @@ app_server <- function( input, output, session ) {
     
     usun_wyswietlany_model()
     
-    updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany" = "years_to_go", "Najtańsze wymiany" = "prize", "Najbardziej energooszczędne wymiany" = "power_efficiency"), selected = sorting())
+    updateSelectInput(session, "sorting2", NULL, c("Najbardziej opłacalne wymiany"       = "years_to_go",
+                                                   "Najtańsze wymiany"                   = "prize",
+                                                   "Najbardziej energooszczędne wymiany" = "power_efficiency",
+                                                   "Koszt po 5 latach użytkowania"       = "true_cost"),
+                      selected = sorting())
   })
   
   observe({

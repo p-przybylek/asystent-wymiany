@@ -88,18 +88,22 @@ test_that('Error dla niepoprawnego criterion',{
 })
 
 test_that('get_best_models z poprawnym parametrem criterion nie zwraca błędu',{
-  expect_silent(fridges_by_power <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'power_efficiency'))
+  expect_silent(get_best_models('fridges', 1200, NULL, 0.617, criterion = 'power_efficiency'))
   expect_silent(get_best_models('fridges', 1200, NULL, 0.617, criterion = 'prize'))
   expect_silent(get_best_models('fridges', 1200, NULL, 0.617, criterion = 'years_to_go'))
+  expect_silent(get_best_models('fridges', 1200, NULL, 0.617, criterion = 'true_cost'))
   expect_silent(get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'power_efficiency'))
   expect_silent(get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'prize'))
   expect_silent(get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'years_to_go'))
+  expect_silent(get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'true_cost'))
 })
 
 test_that('get_best_models działa poprawnie z parametrem criterion dla lodowek',{
-  fridges_by_power <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'power_efficiency')
-  fridges_by_prize <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'prize')
-  fridges_by_years <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'years_to_go')
+  fridges_by_power     <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'power_efficiency')
+  fridges_by_prize     <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'prize')
+  fridges_by_years     <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'years_to_go')
+  fridges_by_true_cost <- get_best_models('fridges', 1200, NULL, 0.617, criterion = 'true_cost')
+  
   expected_fridges_colnames <- c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')
 
   expect_s3_class(fridges_by_power, 'data.frame')
@@ -108,12 +112,16 @@ test_that('get_best_models działa poprawnie z parametrem criterion dla lodowek'
   expect_setequal(colnames(fridges_by_prize), expected_fridges_colnames)
   expect_s3_class(fridges_by_years, 'data.frame')
   expect_setequal(colnames(fridges_by_years), expected_fridges_colnames)
+  expect_s3_class(fridges_by_true_cost, 'data.frame')
+  expect_setequal(colnames(fridges_by_true_cost), expected_fridges_colnames)
 })
 
 test_that('get_best_models działa poprawnie z parametrem criterion dla telewizorow',{
-  tvs_by_power <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'power_efficiency')
-  tvs_by_prize <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'prize')
-  tvs_by_years <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'years_to_go')
+  tvs_by_power     <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'power_efficiency')
+  tvs_by_prize     <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'prize')
+  tvs_by_years     <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'years_to_go')
+  tvs_by_true_cost <- get_best_models('tvs', NULL, tv_con, 0.617, criterion = 'true_cost')
+  
   expected_tvs_colnames <- c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')
 
   expect_s3_class(tvs_by_power, 'data.frame')
@@ -122,6 +130,8 @@ test_that('get_best_models działa poprawnie z parametrem criterion dla telewizo
   expect_setequal(colnames(tvs_by_prize), expected_tvs_colnames)
   expect_s3_class(tvs_by_years, 'data.frame')
   expect_setequal(colnames(tvs_by_years), expected_tvs_colnames)
+  expect_s3_class(tvs_by_true_cost, 'data.frame')
+  expect_setequal(colnames(tvs_by_true_cost), expected_tvs_colnames)
 })
 
 #----- kafelki interfejs 1 -----
@@ -129,12 +139,14 @@ test_that("kolejnosc_kryteriow daje poprawna kolejnosc dla wszystkich mzliwych k
   expect_equal(c(2, 1, 3), kolejnosc_kryteriow(c(600, 300, 900), "years_to_go"))
   expect_equal(c(2, 1, 3), kolejnosc_kryteriow(c(600, 300, 900), "prize"))
   expect_equal(c(3, 1, 2), kolejnosc_kryteriow(c(600, 300, 900), "power_efficiency"))
+  expect_equal(c(2, 1, 3), kolejnosc_kryteriow(c(600, 300, 900), "true_cost"))
 })
 
 test_that("tekst_do_wyswietlania daje poprawny tekst", {
   expect_equal(c("600 lat", "300 lat", "900 lat"), tekst_do_wyswietlania(c(600, 300, 900), "years_to_go"))
   expect_equal(c("600 zł", "300 zł", "900 zł"), tekst_do_wyswietlania(c(600, 300, 900), "prize"))
   expect_equal(c("600 zł miesięcznie", "300 zł miesięcznie", "900 zł miesięcznie"), tekst_do_wyswietlania(c(600/0.617, 300/0.617, 900/0.617), "power_efficiency", 0.617))
+  expect_equal(c("600 zł po 5 latach", "300 zł po 5 latach", "900 zł po 5 latach"), tekst_do_wyswietlania(c(600, 300, 900), "true_cost"))
 })
 
 

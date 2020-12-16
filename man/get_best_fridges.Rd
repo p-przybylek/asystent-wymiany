@@ -15,10 +15,11 @@ get_best_fridges(cur_m_power, el_cost, top_n = 5, filters = NA, criterion)
 
 \item{filters}{filtry do zaaplikowania (być może NA)}
 
-\item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
+\item{criterion}{String, jeden z 4: "years_to_go" (domyślnie), "power_efficiency", "prize", "true_cost".
 years_to_go - ile czasu czekamy do zwrotu inwestycji
 power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
-prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
+prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego
+true_cost - cena produktu minus zysk na kosztach pradu w poruwnaniu z aktualnym modelem}
 }
 \value{
 `data.frame` z kolumnami: ID, Nazwa, Cena, Roczne_zuzycie_pradu_kWh, criterion

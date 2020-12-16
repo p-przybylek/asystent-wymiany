@@ -14,10 +14,11 @@ get_kolejnosc_kafelkow_interface1(
 \arguments{
 \item{el_cost}{koszt 1kWh pradu w domostwie}
 
-\item{criterion}{String, jeden z 3: "years_to_go" (domyślnie), "power_efficiency", "prize".
+\item{criterion}{String, jeden z 4: "years_to_go" (domyślnie), "power_efficiency", "prize", "true_cost".
 years_to_go - ile czasu czekamy do zwrotu inwestycji
 power_efficiency - największa różnica w MIESIĘCZNYM zużyciu prądu
-prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego}
+prize - co najmniej kosztuje sposrod tych, ktore sa bardziej energooszczedne od aktualnego
+true_cost - cena produktu minus zysk na kosztach pradu w poruwnaniu z aktualnym modelem}
 
 \item{cur_m_powers}{wektor aktualnego rocznego zurzycia pradu przez kolejne urzadzenia}
 }
