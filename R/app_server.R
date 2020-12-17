@@ -14,6 +14,19 @@ app_server <- function( input, output, session ) {
                      "start" = "main",
                      "main" = "start")
     shinydashboard::updateTabItems(session, "tabs", newtab)
+    
+    withProgress({
+      # lodowka
+      cur_month_power_fridge <- get_fridge_con()
+      cur_m_power_fridge <- sum(cur_month_power_fridge$kWh)
+      
+      incProgress(0.5)
+      
+      # TV
+      tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
+      
+      incProgress(0.5)
+    }, value = 0, message = "Szukanie najlepszych wymian", detail = "Potrwa to około 5 sekund", session = session)
   })
   
   shinyjs::onclick("box-fridges", { # user wybral lodowki
@@ -33,13 +46,6 @@ app_server <- function( input, output, session ) {
   })
   
   el_cost <- 0.617 # koszt 1 kWh w złotówkach
-  
-  # lodowka
-  cur_month_power_fridge <- get_fridge_con()
-  cur_m_power_fridge <- sum(cur_month_power_fridge$kWh)
-  
-  # TV
-  tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
   
   sorting <- reactiveVal("years_to_go")
   

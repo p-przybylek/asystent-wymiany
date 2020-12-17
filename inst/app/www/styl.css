@@ -238,3 +238,22 @@
 .load-container{
   top: 300px !important;
 }
+
+.shiny-notification {
+  height: 100px;
+  width: 800px;
+  position: fixed;
+  top: calc(50% - 20px);
+  left: calc(50% - 400px);
+  opacity: 1;
+  background-color: #ffffff;
+  color: #263238;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: normal;
+  font-size: 24px;
+}
+
+.progress-detail{
+  display: block;
+}
