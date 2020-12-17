@@ -75,6 +75,7 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
   fridges <- fridges[fridges$years_to_go < 100, ] # liczba lat do zwrotu mniejsza niz 100
   if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
   fridges$Miesieczna_roznica_zuzycia_pradu <- (cur_m_power - fridges$Roczne_zuzycie_pradu_kWh)/12
+  
   criterion_column <- switch (criterion,
     'years_to_go'      = 'years_to_go',
     'prize'            = 'Cena',
@@ -130,6 +131,38 @@ get_best_tvs <- function(tv_con, el_cost, top_n = 5, filters = NA, criterion){
   )
   tvs$criterion <- tvs[[criterion_column]] # to jeszcze nie dziala dla true_cost
   tvs[head(order(tvs[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
+}
+
+#' Policz opłacalność
+#' 
+#' @inheritParams yearly_forecast_plot
+#' @describeIn get_years_to_go Policz czas do zwrotu inwestycji
+#' @return ilość lat, po których zakup się zwróci (`get_years_to_go`) lub bilans po 5 latach (`get_true_cost`)
+#' 
+#' @export
+
+#' @examples
+#' cur_m_power <- 400 # kWh/rok
+#' new_m_power <- 170 # kWh/rok
+#' new_m_price <- 1200 # PLN
+#' el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
+#' test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost, get_fridge_con())
+#' show(test_plot)
+get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
+  if (cur_m_power - new_m_power < 0){
+    years <- Inf
+  }
+  else{
+    new_m_price / ((cur_m_power - new_m_power) * el_cost)
+    
+  }
+}
+
+#' @describeIn get_years_to_go Bilans po pięciu latach
+#' @export
+
+get_true_cost <- function(cur_m_power, new_m_power, new_m_price, el_cost){
+  (cur_m_power - new_m_power) * 5 * el_cost - new_m_price
 }
 
 #' Get info about attributes

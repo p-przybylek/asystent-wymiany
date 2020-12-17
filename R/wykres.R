@@ -81,33 +81,6 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
   return(plot)
 }
 
-#' Calculate cost-effectiveness
-#' 
-#' @inheritParams yearly_forecast_plot
-#' 
-#' @return in how many years the investment will pay off
-#' 
-#' @export
-#' 
-#' @examples
-#' cur_m_power <- 400 # kWh/rok
-#' new_m_power <- 170 # kWh/rok
-#' new_m_price <- 1200 # PLN
-#' el_cost <- 0.617 # PLN/kWh, średni koszt energii elektrycznej w Polsce (maj 2020)
-#' test_plot <- yearly_forecast_plot(cur_m_power, new_m_power, new_m_price, el_cost, get_fridge_con())
-#' show(test_plot)
- 
-get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
-  if (cur_m_power - new_m_power < 0){
-    years <- Inf
-  }
-  else{
-    new_m_price / ((cur_m_power - new_m_power) * el_cost)
-
-  }
-}
-
-
 #' yearly_data_to_plot
 #' 
 #' Tworzy dataset potrzebny do wykresu TV
