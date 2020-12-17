@@ -75,12 +75,17 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
   fridges <- fridges[fridges$years_to_go < 100, ] # liczba lat do zwrotu mniejsza niz 100
   if(nrow(fridges) == 0) return(NULL) # gdy filtrowanie sprawilo, ze nic nie zostalo
   fridges$Miesieczna_roznica_zuzycia_pradu <- (cur_m_power - fridges$Roczne_zuzycie_pradu_kWh)/12
-  
+  fridges$Bilans_po_5_latach <- sapply(1:nrow(fridges), function(i){
+    get_true_cost(cur_m_power, 
+                    new_m_power = fridges[i,'Roczne_zuzycie_pradu_kWh'],
+                    new_m_price = fridges[i,'Cena'],
+                    el_cost)
+  })
   criterion_column <- switch (criterion,
     'years_to_go'      = 'years_to_go',
     'prize'            = 'Cena',
     'power_efficiency' = 'Miesieczna_roznica_zuzycia_pradu',
-    'true_cost'        = 'Koszt_po_5_latach'
+    'true_cost'        = 'Bilans_po_5_latach'
   )
   fridges$criterion <- fridges[[criterion_column]] # to jeszcze nie dziala dla true_cost
   fridges[head(order(fridges[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
@@ -122,12 +127,18 @@ get_best_tvs <- function(tv_con, el_cost, top_n = 5, filters = NA, criterion){
                     new_m_price = tvs[i,'Cena'],
                     el_cost)
   })
+  tvs$Bilans_po_5_latach <- sapply(1:nrow(tvs), function(i){
+    get_years_to_go(cur_m_power,
+                    new_m_power = tvs[i,'Pobor_mocy_est'],
+                    new_m_price = tvs[i,'Cena'],
+                    el_cost)
+  })
   tvs$Miesieczna_roznica_zuzycia_pradu <- (cur_m_power - tvs$Pobor_mocy_est)/12
   criterion_column <- switch (criterion,
                               'years_to_go'      = 'years_to_go',
                               'prize'            = 'Cena',
                               'power_efficiency' = 'Miesieczna_roznica_zuzycia_pradu',
-                              'true_cost'        = 'Koszt_po_5_latach'
+                              'true_cost'        = 'Bilans_po_5_latach'
   )
   tvs$criterion <- tvs[[criterion_column]] # to jeszcze nie dziala dla true_cost
   tvs[head(order(tvs[['criterion']], decreasing = (criterion == 'power_efficiency')), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
