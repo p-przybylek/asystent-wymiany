@@ -19,7 +19,7 @@ get_true_cost(cur_m_power, new_m_power, new_m_price, el_cost)
 \item{el_cost}{koszt pradu, ktore zuzywaja uzadzenia}
 }
 \value{
-ilość lat, po których zakup się zwróci
+ilość lat, po których zakup się zwróci (`get_years_to_go`) lub bilans po 5 latach (`get_true_cost`)
 }
 \description{
 Policz opłacalność
@@ -28,7 +28,7 @@ Policz opłacalność
 \itemize{
 \item \code{get_years_to_go}: Policz czas do zwrotu inwestycji
 
-\item \code{get_true_cost}: Koszt po pięciu latach
+\item \code{get_true_cost}: Bilans po pięciu latach
 }}
 
 \examples{
