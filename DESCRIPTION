@@ -9,7 +9,16 @@ Authors@R: c(person('Przemyslaw', 'Chojecki',
                     role = c('aut')),
              person('Morgen', 'Pawel',
                     email = 'm.pawel@student.mini.pw.edu.pl',
-                    role = c('cre', 'aut'))
+                    role = c('cre', 'aut')),
+             person('Rólkiewicz', 'Renata',
+                    email = 'r.rolkiewicz@student.mini.pw.edu.pl',
+                    role = c('aut')),
+             person('Grzyb', 'Mateusz',
+                    email = 'm.grzyb@student.mini.pw.edu.pl',
+                    role = c('aut')),
+             person('Sieńki', 'Piotr',
+                    email = 's.piotr@student.mini.pw.edu.pl',
+                    role = c('aut'))
  )
 Description: Prototyp asystenta wymiany sprzetu RTV i AGD, czyli rozszeżenie aplikacji dla klienta NAATU.
 License: MIT + file LICENSE
