@@ -472,10 +472,12 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 #' @export
 tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
   return(switch(criterion,
-                'years_to_go' = paste0(round(wartosci_kryteriow, 2), " lat"),
-                'prize' = paste0(wartosci_kryteriow, " zł"),
-                'power_efficiency' = paste0(round(wartosci_kryteriow * el_cost, 2), " zł miesięcznie"), # zaoszczedzonych
-                'true_cost' = paste0(round(wartosci_kryteriow, 0), " zł po 5 latach")))
+                'years_to_go' = paste0("Zwrot już za ", round(wartosci_kryteriow, 2), " lat"),
+                'prize' = paste0("Już od ", wartosci_kryteriow, " zł"),
+                'power_efficiency' = paste0("Zaoszczędź ", round(wartosci_kryteriow * el_cost, 2), " zł miesięcznie"), # zaoszczedzonych
+                'true_cost' = ifelse(wartosci_kryteriow < 0,
+                                     paste0("Zaoszczędź ", -round(wartosci_kryteriow, 0), " zł po 5 latach"),
+                                     paste0("Zapłać tylko ", round(wartosci_kryteriow, 0), " zł po 5 latach"))))
 }
 
 
