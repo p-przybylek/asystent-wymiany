@@ -73,7 +73,11 @@ app_server <- function( input, output, session ) {
   # spaces <- stringi::stri_locate_all(best_models()$label, fixed = ' ')[[1]]['start']
   
   usun_wyswietlany_model <- function(){ # usuwa elementy UI zalezne od wybranego modelu
-    output$modelplot  <- renderUI({})
+    output$modelplot  <- renderUI({
+      validate(
+        need(FALSE, "Wybierz model")
+      )
+    })
     output$image      <- renderUI({})
     output$parameters <- renderUI({})
     output$buy        <- renderUI({})
