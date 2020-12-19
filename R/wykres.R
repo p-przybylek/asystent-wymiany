@@ -51,7 +51,7 @@ yearly_forecast_plot <- function(cur_m_power, new_m_power, new_m_price, el_cost,
     ggplot2::geom_segment(x = end_date, y = -meet_cost, xend = end_date, yend = meet_cost, col = 'black', linetype = 'dashed', size = 0.5) +
     ggplot2::annotate(geom = 'label', x = end_date, y = meet_cost / 2 , label = paste0('Data zwrotu inwestycji: \n', end_date), size = 5) +
     ggplot2::scale_color_manual(name = 'Model:', labels = c('obecny', 'proponowany'), values = c('#ec524b', '#16a596'), guide = guide_legend(reverse = TRUE)) +
-    ggplot2::xlab('Data') +
+    ggplot2::xlab('Rok') +
     ggplot2::ylab('Skumulowany koszt (zł)') +
     ggplot2::coord_cartesian(ylim = c(0, max(plot_data$value)*1.2)) +
     ggplot2::theme_bw(base_size = 20) +
