@@ -88,7 +88,7 @@ get_best_fridges <- function(cur_m_power, el_cost, top_n = 5, filters = NA, crit
     'true_cost'        = 'Bilans_po_5_latach'
   )
   fridges$criterion <- fridges[[criterion_column]]
-  fridges[head(order(fridges[['criterion']], decreasing = criterion %in% c('power_efficiency', 'true_cost')), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
+  fridges[head(order(fridges[['criterion']], decreasing = criterion %in% c('power_efficiency')), n=top_n),c('ID', "Nazwa", "Cena", "Roczne_zuzycie_pradu_kWh", 'criterion')]
 }
 
 #' Najlepsze telewizory
@@ -141,7 +141,7 @@ get_best_tvs <- function(tv_con, el_cost, top_n = 5, filters = NA, criterion){
                               'true_cost'        = 'Bilans_po_5_latach'
   )
   tvs$criterion <- tvs[[criterion_column]]
-  tvs[head(order(tvs[['criterion']], decreasing = (criterion %in% c('power_efficiency', 'true_cost'))), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
+  tvs[head(order(tvs[['criterion']], decreasing = (criterion %in% c('power_efficiency'))), n=top_n), c('ID', "Nazwa", "Cena", "Pobor_mocy_tryb_czuwania_W", "Pobor_mocy_tryb_wlaczenia_W", "years_to_go", 'criterion')]
 }
 
 #' Policz opłacalność
@@ -173,7 +173,7 @@ get_years_to_go <- function(cur_m_power, new_m_power, new_m_price, el_cost){
 #' @export
 
 get_true_cost <- function(cur_m_power, new_m_power, new_m_price, el_cost){
-  (cur_m_power - new_m_power) * 5 * el_cost - new_m_price
+  new_m_price - (cur_m_power - new_m_power) * 5 * el_cost
 }
 
 #' Get info about attributes
