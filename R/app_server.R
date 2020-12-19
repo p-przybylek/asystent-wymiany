@@ -17,12 +17,14 @@ app_server <- function( input, output, session ) {
     
     withProgress({
       # lodowka
+      setProgress(message = "Szukanie najlepszych lodówek")
       cur_month_power_fridge <- get_fridge_con()
       cur_m_power_fridge <- sum(cur_month_power_fridge$kWh)
       
       incProgress(0.5)
       
       # TV
+      setProgress(message = "Szukanie najlepszych telewizorów")
       tv_con <- get_tv_con() # to laduje sie ok. 4 sekund, nie zmienia się w czasie dzialania aplikacji. Żeby przeładować dane, trzeba zrestartowac aplikacje.
       
       incProgress(0.5)
