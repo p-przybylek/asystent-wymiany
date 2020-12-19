@@ -30,8 +30,8 @@ test_that("proper dataset for tv plot is created",{
    cur_m_power <- sum(cur_month_power$kWh)
    el_cost <- 0.617
    new_m_price <- 1000
-   expect_s3_class(yearly_data_to_plot(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power, new_month_power),
-                   "data.frame")
+   expect_type(yearly_data_to_plot(cur_m_power, new_m_power, new_m_price, el_cost, cur_month_power, new_month_power),
+                   "list")
 })
          
 
