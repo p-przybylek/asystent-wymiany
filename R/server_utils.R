@@ -462,6 +462,22 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
   return(order(wartosci_kryteriow))
 }
 
+#' Zamienia date wyrazona w latach (np. 2.5 lat) na liczbe lat i miesiecy (np. 2 lata i 6 miesiecy) 
+#' 
+#' @param num_years liczba lat
+#' 
+#' @return tekst z odpowiednia liczba lat i miesiecy
+#' @import lubridate
+#' @export
+wyswietl_date <-  function(num_years){
+  y <- lubridate::year(lubridate::date_decimal(num_years))
+  m <- lubridate::month(lubridate::date_decimal(num_years))
+  tekst <- c("lata","miesiace")
+  ifelse(y == 1, tekst[1] <- "rok", ifelse(y >= 5, tekst[1] <- "lat", tekst[1] <- "lata"))
+  ifelse(m == 1, tekst[2] <- "miesiac", ifelse(m >= 5, tekst[2] <- "miesiecy", tekst[2] <- "miesiace"))
+
+  return(paste(y,tekst[1],m,tekst[2]))
+}
 
 #' Ustala jakie napisy powinny sie wyswietlac na kafelkach interfejsu 1
 #' 
@@ -472,7 +488,7 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 #' @export
 tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
   return(switch(criterion,
-                'years_to_go' = paste0("Zwrot już za ", round(wartosci_kryteriow, 2), " lat"),
+                'years_to_go' = paste0("Zwrot już za ", wyswietl_date(round(wartosci_kryteriow, 2))),
                 'prize' = paste0("Już od ", wartosci_kryteriow, " zł"),
                 'power_efficiency' = paste0("Zaoszczędź ", round(wartosci_kryteriow * el_cost, 2), " zł miesięcznie"), # zaoszczedzonych
                 'true_cost' = ifelse(wartosci_kryteriow < 0,
