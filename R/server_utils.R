@@ -477,7 +477,8 @@ wyswietl_date <-  function(num_years){
     tekst <- c("lata","miesiace")
     ifelse(y == 1, tekst[1] <- "rok", ifelse(y== 0 | y >= 5, tekst[1] <- "lat", tekst[1] <- "lata"))
     ifelse(m == 1, tekst[2] <- "miesiąc", ifelse(m >= 5, tekst[2] <- "miesięcy", tekst[2] <- "miesiące"))
-    tekst_zwrot <- append(tekst_zwrot,paste(y,tekst[1],m,tekst[2]))
+    ifelse(y==0,tekst_zwrot <- append(tekst_zwrot,paste(m,tekst[2])),tekst_zwrot <- append(tekst_zwrot,paste(y,tekst[1],m,tekst[2])))
+    
   }
     return(tekst_zwrot)
 }
