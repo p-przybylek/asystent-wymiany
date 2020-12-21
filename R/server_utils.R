@@ -470,13 +470,16 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 #' @import lubridate
 #' @export
 wyswietl_date <-  function(num_years){
-  y <- lubridate::year(lubridate::date_decimal(num_years))
-  m <- lubridate::month(lubridate::date_decimal(num_years))
-  tekst <- c("lata","miesiace")
-  ifelse(y == 1, tekst[1] <- "rok", ifelse(y >= 5, tekst[1] <- "lat", tekst[1] <- "lata"))
-  ifelse(m == 1, tekst[2] <- "miesiac", ifelse(m >= 5, tekst[2] <- "miesiecy", tekst[2] <- "miesiace"))
-
-  return(paste(y,tekst[1],m,tekst[2]))
+  tekst_zwrot <- c()
+  for (n in num_years){
+    y <- lubridate::year(lubridate::date_decimal(n))
+    m <- lubridate::month(lubridate::date_decimal(n))
+    tekst <- c("lata","miesiace")
+    ifelse(y == 1, tekst[1] <- "rok", ifelse(y== 0 | y >= 5, tekst[1] <- "lat", tekst[1] <- "lata"))
+    ifelse(m == 1, tekst[2] <- "miesiąc", ifelse(m >= 5, tekst[2] <- "miesięcy", tekst[2] <- "miesiące"))
+    tekst_zwrot <- append(tekst_zwrot,paste(y,tekst[1],m,tekst[2]))
+  }
+    return(tekst_zwrot)
 }
 
 #' Ustala jakie napisy powinny sie wyswietlac na kafelkach interfejsu 1
