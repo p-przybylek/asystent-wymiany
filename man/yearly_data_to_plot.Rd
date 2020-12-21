@@ -27,7 +27,7 @@ yearly_data_to_plot(
 \item{new_month_powera}{wektor zuzycia pradu przez aktualne urzadzenie w zaleznosci od miesiaca}
 }
 \value{
-dataframe
+list (dataframe (for plot), meetcost, end_date, fut_date, years_to_go)
 }
 \description{
 Tworzy dataset potrzebny do wykresu TV

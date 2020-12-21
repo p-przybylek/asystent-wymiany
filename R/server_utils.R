@@ -472,15 +472,21 @@ kolejnosc_kryteriow <- function(wartosci_kryteriow, criterion){
 wyswietl_date <-  function(num_years){
   tekst_zwrot <- c()
   for (n in num_years){
-    y <- lubridate::year(lubridate::date_decimal(n))
+    y <- lubridate::year (lubridate::date_decimal(n))
     m <- lubridate::month(lubridate::date_decimal(n))
     tekst <- c("lata","miesiace")
-    ifelse(y == 1, tekst[1] <- "rok", ifelse(y== 0 | y >= 5, tekst[1] <- "lat", tekst[1] <- "lata"))
-    ifelse(m == 1, tekst[2] <- "miesiąc", ifelse(m >= 5, tekst[2] <- "miesięcy", tekst[2] <- "miesiące"))
-    ifelse(y==0,tekst_zwrot <- append(tekst_zwrot,paste(m,tekst[2])),tekst_zwrot <- append(tekst_zwrot,paste(y,tekst[1],m,tekst[2])))
+    tekst[1]    <- ifelse(y == 1, "rok", 
+                                  ifelse(y == 0 | y >= 5, "lat",
+                                                          "lata"))
+    tekst[2]    <- ifelse(m == 1, "miesiąc",
+                                  ifelse(m >= 5, "miesięcy",
+                                                 "miesiące"))
+    tekst_zwrot <- c(tekst_zwrot, 
+                     ifelse(y == 0, paste(m, tekst[2]),
+                                    paste(y, tekst[1], m, tekst[2])))
     
   }
-    return(tekst_zwrot)
+  return(tekst_zwrot)
 }
 
 #' Ustala jakie napisy powinny sie wyswietlac na kafelkach interfejsu 1
@@ -496,8 +502,8 @@ tekst_do_wyswietlania <- function(wartosci_kryteriow, criterion, el_cost){
                 'prize' = paste0("Już od ", wartosci_kryteriow, " zł"),
                 'power_efficiency' = paste0("Zaoszczędź ", round(wartosci_kryteriow * el_cost, 2), " zł miesięcznie"), # zaoszczedzonych
                 'true_cost' = ifelse(wartosci_kryteriow < 0,
-                                     paste0("Zaoszczędź ", -round(wartosci_kryteriow, 0), " zł po 5 latach"),
-                                     paste0("Zapłać tylko ", round(wartosci_kryteriow, 0), " zł po 5 latach"))))
+                                     paste0("Zaoszczędź "  , -round(wartosci_kryteriow, 0), " zł po 5 latach"),
+                                     paste0("Zapłać tylko ",  round(wartosci_kryteriow, 0), " zł po 5 latach"))))
 }
 
 
