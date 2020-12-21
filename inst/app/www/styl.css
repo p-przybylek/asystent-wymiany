@@ -108,7 +108,8 @@
 }
 
 .text-kafelki{
-  font-size: 50px;
+  font-size: 43px;
+  text-shadow: 2px 2px 4px black;
 }
 
 #box-modelplot {
