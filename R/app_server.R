@@ -228,6 +228,7 @@ app_server <- function( input, output, session ) {
             tags$img(src = switch(urzadzenie(),
                                   "fridges" = fridges[best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"],
                                   "tvs"     = tvs    [best_models()[best_models()$input_ID == input_id,"ID"], "Zdj"]),
+                     onerror="this.src='www/img/error.png'",
                      width= "90%")
           })}
         output$parameters <- {
@@ -303,7 +304,7 @@ app_server <- function( input, output, session ) {
                     lapply(all_offers, function(list){
                       shinydashboard::box(width = 2, 
                                           class = "box",
-                                          tags$img(src=shops_logo[shops_logo$Sklep == list$Sklep, "Logo"], width="90%", height="100px"),
+                                          tags$img(src=shops_logo[shops_logo$Sklep == list$Sklep, "Logo"], onerror="this.src='www/img/error.png'", width="90%", height="100px"),
                                           br(),
                                           p(paste0(list$Cena, " zł"), class = "text_price"),
                                           tags$a(href=list$URL,
