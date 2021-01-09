@@ -77,6 +77,9 @@ app_server <- function( input, output, session ) {
   usun_wyswietlany_model <- function(){ # usuwa elementy UI zalezne od wybranego modelu
     output$modelplot  <- renderUI({
       validate(
+        need(!is.null(best_models()), "Wybierz inne filtry")
+      )
+      validate(
         need(FALSE, "Wybierz model")
       )
     })
