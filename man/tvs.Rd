@@ -5,7 +5,7 @@
 \alias{tvs}
 \title{Energooszczędne lodówki}
 \format{
-An object of class \code{data.frame} with 50 rows and 20 columns.
+An object of class \code{data.frame} with 49 rows and 20 columns.
 }
 \usage{
 tvs

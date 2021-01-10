@@ -5,7 +5,7 @@
 \alias{fridges}
 \title{Energooszczędne lodówki}
 \format{
-An object of class \code{data.frame} with 48 rows and 24 columns.
+An object of class \code{data.frame} with 42 rows and 24 columns.
 }
 \usage{
 fridges
